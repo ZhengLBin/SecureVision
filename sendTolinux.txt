@@ -1,0 +1,8 @@
+/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/../lib/gcc/arm-linux-gnueabihf/8.3.0/../../../../arm-linux-gnueabihf/bin/ld: moc_secureVision.o: in function `SecureVision::qt_static_metacall(QObject*, QMetaObject::Call, int, void**)':
+moc_secureVision.cpp:(.text+0x78): undefined reference to `SecureVision::handleMonitorClick()'
+collect2: error: ld returned 1 exit status
+make: *** [Makefile:277: SecureVison] Error 1
+19:49:29: 进程"/usr/bin/make"退出，退出代码 2 。
+Error while building/deploying project secureVison (kit: rtk-dlrv1126)
+When executing step "Make"
+19:49:29: Elapsed time: 00:02.

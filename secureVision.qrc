@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/AVDeepfake">
+        <file alias="appLogo">Resource/appLogo.png</file>
+        <file alias="AuChange">Resource/AuChange.png</file>
+        <file alias="AuDetection">Resource/AuDetection.png</file>
+        <file alias="AuGE">Resource/AuGE.png</file>
+        <file alias="dashboard">Resource/dashboard.png</file>
+        <file alias="history">Resource/history.png</file>
+        <file alias="ViChange">Resource/ViChange.png</file>
+        <file alias="ViCheck">Resource/ViCheck.png</file>
+        <file alias="ViGe">Resource/ViGe.png</file>
+        <file alias="voice">Resource/voice.png</file>
+        <file alias="appTitle">Resource/AppTitle.png</file>
+        <file alias="defaultImg">Resource/defaultImg.png</file>
+        <file alias="endRecord">Resource/endRecord.png</file>
+        <file alias="micro">Resource/micro.png</file>
+        <file alias="startRecord">Resource/startRecord.png</file>
+        <file alias="stopRecord">Resource/stopRecord.png</file>
+        <file alias="defaultMonitorImg">Resource/defaultMonitorImg.png</file>
+        <file alias="MonitorLogo">Resource/MonitorLogo.png</file>
+
+    </qresource>
+    <qresource prefix="/video">
+        <file alias="showDefault1">Resource/videoDefault/showDefault1.mp4</file>
+        <file alias="showDefault2">Resource/videoDefault/showDefault2.mp4</file>
+    </qresource>
+</RCC>
