@@ -1,18 +1,19 @@
 #include "../../include/pages/MonitorListPage.h"
+
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QDebug>
 
+const QString MonitorListPage::cardLogoPath = ":/AVDeepfake/MonitorLogo";
 MonitorListPage::MonitorListPage(QWidget* parent)
     : QWidget(parent)
 {
-    m_rtspStreams = {
-        "mipi01"
-        //"rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/101?transportmode=unicast",
-        //"rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/201?transportmode=unicast"
-        // 可以继续添加更多地址
-    };
+    // 初始化设备（实际项目中可以从配置文件或数据库加载）
+    m_deviceManager.addDevice("MIPI 01");
+    m_deviceManager.addDevice("IP 01", "rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/101?transportmode=unicast");
+    m_deviceManager.addDevice("IP 02", "rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/201?transportmode=unicast");
     setupCards();
 }
 
@@ -22,12 +23,10 @@ void MonitorListPage::setupCards()
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(10);
 
-    const QVector<QPair<QString, QString>> cardData = {
-        {":/AVDeepfake/MonitorLogo", m_rtspStreams[0]},
-    };
+    QVector<Device> devices = m_deviceManager.devices();
 
     const int cardsPerRow = 2;
-    int totalCards = m_rtspStreams.size(); 
+    int totalCards = devices.size();
     int rowCount = (totalCards + cardsPerRow - 1) / cardsPerRow; // 计算需要的行数
 
     for (int row = 0; row < rowCount; ++row) {
@@ -38,12 +37,16 @@ void MonitorListPage::setupCards()
         // 计算当前行的起始和结束索引
         int startIdx = row * cardsPerRow;
         int endIdx = qMin(startIdx + cardsPerRow, totalCards);
-        
+        //qDebug() << "Type of cardLogoPath:" << typeid(cardLogoPath).name();
+
+
         // 添加当前行的卡片
         for (int i = startIdx; i < endIdx; ++i) {
+            int typeNum = static_cast<int>(devices[i].type());
             MonitorWidget* card = new MonitorWidget(
-                cardData[i].first, 
-                cardData[i].second, 
+                cardLogoPath,
+                devices[i].name(),
+                typeNum,
                 this
             );
             connect(card, &MonitorWidget::monitorClicked, this, &MonitorListPage::openShowMonitorPage);

@@ -29,12 +29,14 @@ RESOURCES += \
 
 # 添加RKMedia相关头文件路径
 INCLUDEPATH += /home/zhenglongbin/RV1126/external/rkmedia/include
+INCLUDEPATH += /home/zhenglongbin/RV1126/app/alientek/atk_rkmedia/library/include
 
 # 添加库文件的路径
 LIBS += -L/home/zhenglongbin/RV1126/buildroot/output/alientek_rv1126/host/arm-buildroot-linux-gnueabihf/sysroot/oem/usr/lib
 
 # 链接需要的库文件
 LIBS += -leasymedia -lthird_media -lrockchip_mpp
+LIBS += -latk_camera -lsample_common_isp
 
 # 设置运行时库搜索路径（指向开发板上的实际路径）
 QMAKE_LFLAGS += -Wl,-rpath,/oem/usr/lib

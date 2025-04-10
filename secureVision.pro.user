@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.8.2, 2025-03-31T20:32:28. -->
+<!-- Written by QtCreator 4.8.2, 2025-04-09T11:36:24. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -269,28 +269,31 @@
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">RemoteLinux.DirectUploadStep</value>
       <valuelist type="QVariantList" key="ProjectExplorer.RunConfiguration.LastDeployedFiles">
-       <value type="QString">/home/zhenglongbin/RV1126/project/AVDeepFake副本/build-avDeepfake-rtk_dlrv1126-Debug/avDeepfake</value>
-       <value type="QString">/home/zhenglongbin/RV1126/project/AVDeepFake副本/build-avDeepfake-rtk_dlrv1126-Debug/avDeepfake</value>
-       <value type="QString">/home/zhenglongbin/RV1126/project/AVDeepFake副本/build-avDeepfake-rtk_dlrv1126-Debug/avDeepfake</value>
        <value type="QString">/home/zhenglongbin/RV1126/project/AVDeepFake副本/build-avDeepfake-rtk_dlrv1126-Debug/SecureVision</value>
        <value type="QString">/home/zhenglongbin/RV1126/project/AVDeepFake副本/build-avDeepfake-rtk_dlrv1126-Debug/SecureVison</value>
+       <value type="QString">/home/zhenglongbin/RV1126/project/AVDeepFake副本/build-avDeepfake-rtk_dlrv1126-Debug/SecureVision</value>
        <value type="QString">/home/zhenglongbin/RV1126/project/AVDeepFake副本/build-avDeepfake-rtk_dlrv1126-Debug/SecureVison</value>
+       <value type="QString">/home/zhenglongbin/RV1126/project/AVDeepFake副本/build-avDeepfake-rtk_dlrv1126-Debug/avDeepfake</value>
+       <value type="QString">/home/zhenglongbin/RV1126/project/AVDeepFake副本/build-avDeepfake-rtk_dlrv1126-Debug/avDeepfake</value>
+       <value type="QString">/home/zhenglongbin/RV1126/project/AVDeepFake副本/build-avDeepfake-rtk_dlrv1126-Debug/avDeepfake</value>
       </valuelist>
       <valuelist type="QVariantList" key="ProjectExplorer.RunConfiguration.LastDeployedHosts">
+       <value type="QString">192.168.16.230</value>
+       <value type="QString">192.168.16.230</value>
+       <value type="QString">192.168.16.246</value>
+       <value type="QString">192.168.16.233</value>
+       <value type="QString">192.168.16.235</value>
        <value type="QString">192.168.16.233</value>
        <value type="QString">192.168.16.234</value>
-       <value type="QString">192.168.16.235</value>
-       <value type="QString">192.168.16.230</value>
-       <value type="QString">192.168.16.230</value>
-       <value type="QString">192.168.16.233</value>
       </valuelist>
       <valuelist type="QVariantList" key="ProjectExplorer.RunConfiguration.LastDeployedRemotePaths">
-       <value type="QString">/opt/avDeepfake/bin</value>
-       <value type="QString">/opt/avDeepfake/bin</value>
-       <value type="QString">/opt/avDeepfake/bin</value>
        <value type="QString">/opt/SecureVision/bin</value>
        <value type="QString">/opt/SecureVison/bin</value>
+       <value type="QString">/opt/SecureVision/bin</value>
        <value type="QString">/opt/SecureVison/bin</value>
+       <value type="QString">/opt/avDeepfake/bin</value>
+       <value type="QString">/opt/avDeepfake/bin</value>
+       <value type="QString">/opt/avDeepfake/bin</value>
       </valuelist>
       <valuelist type="QVariantList" key="ProjectExplorer.RunConfiguration.LastDeployedSysroots">
        <value type="QString"></value>
@@ -299,14 +302,16 @@
        <value type="QString"></value>
        <value type="QString"></value>
        <value type="QString"></value>
+       <value type="QString"></value>
       </valuelist>
       <valuelist type="QVariantList" key="ProjectExplorer.RunConfiguration.LastDeployedTimes">
+       <value type="QDateTime">2025-04-02T16:38:07.454</value>
+       <value type="QDateTime">2025-03-31T14:57:35.742</value>
+       <value type="QDateTime">2025-04-07T16:54:42.874</value>
+       <value type="QDateTime">2025-03-20T17:59:54.357</value>
+       <value type="QDateTime">2025-03-05T15:35:34.880</value>
        <value type="QDateTime">2025-03-20T17:00:53.140</value>
        <value type="QDateTime">2025-03-14T16:32:31.142</value>
-       <value type="QDateTime">2025-03-05T15:35:34.880</value>
-       <value type="QDateTime">2025-03-31T20:32:16.918</value>
-       <value type="QDateTime">2025-03-31T14:57:35.742</value>
-       <value type="QDateTime">2025-03-20T17:59:54.357</value>
       </valuelist>
       <value type="bool" key="RemoteLinux.GenericDirectUploadStep.IgnoreMissingFiles">false</value>
       <value type="bool" key="RemoteLinux.GenericDirectUploadStep.Incremental">true</value>

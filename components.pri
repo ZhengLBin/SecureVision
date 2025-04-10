@@ -6,7 +6,8 @@ SOURCES += \
     $$PWD/src/components/WaveFormManager.cpp \
     $$PWD/src/components/AudioUploader.cpp \
     $$PWD/src/components/QcustomPlot.cpp \
-    $$PWD/src/components/MonitorWidget.cpp
+    $$PWD/src/components/MonitorWidget.cpp \
+    $$PWD/src/components/camerathread.cpp
 
 HEADERS += \
     $$PWD/include/components/RecordingDialog.h \
@@ -14,4 +15,6 @@ HEADERS += \
     $$PWD/include/components/WaveFormManager.h \
     $$PWD/include/components/AudioUploader.h \
     $$PWD/include/components/QcustomPlot.h \
-    $$PWD/include/components/MonitorWidget.h
+    $$PWD/include/components/MonitorWidget.h \
+    $$PWD/include/components/camerathread.h \
+    $$PWD/include/components/capturethread.h

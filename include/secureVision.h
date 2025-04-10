@@ -25,7 +25,7 @@ private slots:
     void returnToDetectionPage();     // 返回篡改检测页
     void switchRightPage(int index);  // 切换右侧页面（监控/异常/篡改）
 
-    void showMonitorStream(const QString& rtspUrl);  // 进入 ShowMonitorPage
+    void showMonitorStream(const QString& rtspUrl, const int m_type);  // 进入 ShowMonitorPage
     void returnToMonitorList();  // 返回 MonitorListPage
 
 private:

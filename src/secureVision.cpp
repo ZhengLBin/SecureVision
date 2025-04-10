@@ -13,7 +13,6 @@
 SecureVision::SecureVision(QWidget* parent)
     : QMainWindow(parent),
       monitorPage(std::make_unique<MonitorListPage>(this)),
-      showMonitorPage(std::make_unique<ShowMonitorPage>(this)),
       anomalyPage(std::make_unique<QWidget>(this)),
       detectionPage(std::make_unique<DetectionListPage>(this)),
       videoPage(std::make_unique<VideoDetectionPage>(this)),
@@ -38,8 +37,6 @@ void SecureVision::setupUi()
     // 监听 MonitorListPage 的点击信号，进入 ShowMonitorPage
     connect(monitorPage.get(), &MonitorListPage::openShowMonitorPage, this, &SecureVision::showMonitorStream);
 
-    // 监听 ShowMonitorPage 的返回信号，返回 MonitorListPage
-    connect(showMonitorPage.get(), &ShowMonitorPage::backToMonitorList, this, &SecureVision::returnToMonitorList);
 }
 
 void SecureVision::createLeftNavigationBar()
@@ -127,7 +124,6 @@ void SecureVision::setupGlobalStack()
     globalStack->addWidget(normalModeWidget);  // 索引 0
     globalStack->addWidget(videoPage.get());   // 索引 1: 视频检测页
     globalStack->addWidget(audioPage.get());   // 索引 2: 音频检测页
-    globalStack->addWidget(showMonitorPage.get()); // 索引 3: 监控页
 
     
     // 连接返回信号
@@ -141,11 +137,22 @@ void SecureVision::switchRightPage(int index)
     rightStack->setCurrentIndex(index);
 }
 
-void SecureVision::showMonitorStream(const QString& rtspUrl)
+void SecureVision::showMonitorStream(const QString& rtspUrl, const int m_type)
 {
+    if (!showMonitorPage) {
+        qDebug() << "m_type-----------------" << m_type;
+        qDebug() << "ShowMonitorPage constructed-----------------";
+        showMonitorPage = std::make_unique<ShowMonitorPage>(m_type, this); 
+        globalStack->addWidget(showMonitorPage.get());
+
+        // 监听 ShowMonitorPage 的返回信号
+        connect(showMonitorPage.get(), &ShowMonitorPage::backToMonitorList, this, &SecureVision::returnToMonitorList);
+    }
+
     showMonitorPage->setStreamUrl(rtspUrl);  // 传递 RTSP 地址
     globalStack->setCurrentWidget(showMonitorPage.get());  // 切换页面
 }
+
 
 void SecureVision::handleDetectClick(int index)
 {
@@ -162,9 +169,17 @@ void SecureVision::returnToDetectionPage()
 
 void SecureVision::returnToMonitorList()
 {
-    // 返回正常布局并切换到监控页
     globalStack->setCurrentIndex(0);
     rightStack->setCurrentIndex(0);
+    qDebug() << "returnToMonitorList---------";
+    if (showMonitorPage) {
+        globalStack->removeWidget(showMonitorPage.get());
+
+        // 延迟释放（保证信号处理完后再释放）
+        auto ptr = showMonitorPage.release();
+        QTimer::singleShot(0, ptr, [ptr]() { delete ptr; });
+    }
 }
+
 
 SecureVision::~SecureVision() = default;

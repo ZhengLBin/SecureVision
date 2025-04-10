@@ -1,4 +1,5 @@
 #include "../../include/components/MonitorWidget.h"
+#include "../../include/manager/Device.h"
 //#include "secureVision.h"
 #include <QEvent>
 #include <QVBoxLayout>
@@ -7,8 +8,11 @@
 #include <QDebug>
 #include <QPropertyAnimation>
 
-MonitorWidget::MonitorWidget(const QString& iconPath, const QString& title,QWidget* parent)
-    : QWidget(parent), streamUrl(title)
+MonitorWidget::MonitorWidget(const QString& iconPath,
+                             const QString& title,
+                             const int typeNum,
+                             QWidget* parent)
+    : QWidget(parent), m_rtspUrl(title), m_type(typeNum)
 {
     this->setFixedSize(450, 300);
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -31,13 +35,13 @@ MonitorWidget::MonitorWidget(const QString& iconPath, const QString& title,QWidg
 
     logoTitleLayout->addStretch();
 
-    QLabel* logoLabel = new QLabel(labelContainer);
-    logoLabel->setPixmap(QPixmap(iconPath).scaled(80, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    logoLabel->setStyleSheet("background: transparent; border: none;");
+    this->logoLabel = new QLabel(labelContainer);
+    this->logoLabel->setPixmap(QPixmap(iconPath).scaled(80, 80, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    this->logoLabel->setStyleSheet("background: transparent; border: none;");
     logoTitleLayout->addWidget(logoLabel, 0, Qt::AlignLeft);
 
-    QLabel* titleLabel = new QLabel(title, labelContainer);
-    titleLabel->setStyleSheet("font-size: 50px; font-weight: bold;color: #333; background: transparent; border: none;");
+    this->titleLabel = new QLabel(title, labelContainer);
+    this->titleLabel->setStyleSheet("font-size: 50px; font-weight: bold;color: #333; background: transparent; border: none;");
     logoTitleLayout->addWidget(titleLabel, 0, Qt::AlignLeft);
 
     // 添加一个伸缩项，确保 logo 和 title 整体靠左
@@ -53,8 +57,11 @@ MonitorWidget::MonitorWidget(const QString& iconPath, const QString& title,QWidg
 
 void MonitorWidget::mousePressEvent(QMouseEvent* event)
 {
-    emit monitorClicked(streamUrl);  // 发送 RTSP URL
-    qDebug() << "MonitorWidget clicked: " << streamUrl;
+    Q_UNUSED(event);
+    //emit monitorClicked(streamUrl);  // 发送 RTSP URL
+    emit monitorClicked(m_rtspUrl, m_type);
+    qDebug() << "MonitorWidget clicked: " << m_rtspUrl;
+    qDebug() << "MonitorWidget clicked type: " << m_type;
 }
 
 

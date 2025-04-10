@@ -5,22 +5,46 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QDateTime>
+#include <QTimer>
+
+#include "../components/capturethread.h"
 
 class ShowMonitorPage : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ShowMonitorPage(QWidget *parent = nullptr);
-    void setStreamUrl(const QString& url);  // 用于接收 RTSP 地址
+    explicit ShowMonitorPage(const int type, QWidget *parent = nullptr);
+    ~ShowMonitorPage();
+
+    void setStreamUrl(const QString& url);
 
 signals:
     void backToMonitorList();  // 返回按钮信号
 
 private:
-    QLabel* titleLabel;
-    QLabel* streamLabel;  // 用于显示 RTSP 地址
-    QPushButton* backButton;
+    // 初始化方法
+    void initUI();
+    void initStreamLabel();
+    void initVideoLabel();
+    void initButtonArea();
+    void initBackButton();
+
+    void initConnections();
+    
+    void initMipiCaptureThread();
+    void initRtspCaptureThread();
+
+    // UI控件
+    QLabel *streamLabel;
+    QPushButton *backButton;
+    QLabel *videoLabel;
+    QWidget *buttonContainer;  // 新增的按钮容器成员变量
+
+    bool isCaptureThreadInitialized = false; 
+    CaptureThread *captureThread;
+    int m_type;
 };
 
 #endif // SHOWMONITORPAGE_H
