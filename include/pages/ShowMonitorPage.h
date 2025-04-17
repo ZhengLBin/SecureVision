@@ -8,14 +8,15 @@
 #include <QDateTime>
 #include <QTimer>
 
-#include "../components/capturethread.h"
+#include "../components/capture/capturethread.h"
+#include "../components/capture/rtspthread.h"
 
 class ShowMonitorPage : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ShowMonitorPage(const int type, QWidget *parent = nullptr);
+    explicit ShowMonitorPage(const int type, const QString& rtspUrl, QWidget *parent = nullptr);
     ~ShowMonitorPage();
 
     void setStreamUrl(const QString& url);
@@ -42,9 +43,12 @@ private:
     QLabel *videoLabel;
     QWidget *buttonContainer;  // 新增的按钮容器成员变量
 
-    bool isCaptureThreadInitialized = false; 
+    bool isMIPICaptureThreadInitialized = false;
+    bool isrtspCaptureThreadInitialized = false;
     CaptureThread *captureThread;
+    RtspThread *rtspThread;
     int m_type;
+    QString m_rtspUrl;
 };
 
 #endif // SHOWMONITORPAGE_H

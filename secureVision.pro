@@ -10,6 +10,7 @@ TEMPLATE = app
 DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++14
+CONFIG += moc
 
 # 包含 pages.pri 和 components.pri
 include(pages.pri)
@@ -27,6 +28,9 @@ HEADERS += \
 RESOURCES += \
     secureVision.qrc
 
+
+CONFIG += link_pkgconfig
+PKGCONFIG += libavformat libavcodec libavutil libswscale
 # 添加RKMedia相关头文件路径
 INCLUDEPATH += /home/zhenglongbin/RV1126/external/rkmedia/include
 INCLUDEPATH += /home/zhenglongbin/RV1126/app/alientek/atk_rkmedia/library/include

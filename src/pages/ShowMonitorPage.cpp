@@ -1,14 +1,24 @@
-#include "../../include/pages/ShowMonitorPage.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTimer>
 
-ShowMonitorPage::ShowMonitorPage(const int type, QWidget *parent)
+extern "C" {
+#include <libavformat/avformat.h>
+}
+#include "../../include/pages/ShowMonitorPage.h"
+
+ShowMonitorPage::ShowMonitorPage(const int type, const QString& rtspUrl, QWidget *parent)
      : QWidget(parent), m_type(type)
 {
     initUI();
     initConnections();
+    qDebug() << "ShowMonitorPage construct";
+    if (rtspUrl == "IP 01") {
+        m_rtspUrl = "rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/101?transportmode=unicast";
+    } else if (rtspUrl == "IP 02") {
+        m_rtspUrl = "rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/201?transportmode=unicast";
+    }
     if (m_type == 0) {
         initMipiCaptureThread();
     } else if (m_type == 1) {
@@ -18,14 +28,20 @@ ShowMonitorPage::ShowMonitorPage(const int type, QWidget *parent)
 
 ShowMonitorPage::~ShowMonitorPage()
 {
-    qDebug() << "~ShowMonitorPage deleted" << isCaptureThreadInitialized;
 
     // 只有在初始化了 captureThread 后才执行删除
-    if (isCaptureThreadInitialized) {
+    if (isMIPICaptureThreadInitialized) {
         captureThread->setThreadStart(false);
         delete captureThread;         // 删除线程
         captureThread = nullptr;      // 置空指针
-        isCaptureThreadInitialized = false;  // 重置标志
+        isMIPICaptureThreadInitialized = false;  // 重置标志
+    }
+
+    if (isrtspCaptureThreadInitialized) {
+        rtspThread->setThreadStart(false);
+        delete rtspThread;         // 删除线程
+        rtspThread = nullptr;      // 置空指针
+        isrtspCaptureThreadInitialized = false;  // 重置标志
     }
 }
 
@@ -119,7 +135,7 @@ void ShowMonitorPage::initConnections()
 
 void ShowMonitorPage::initMipiCaptureThread()
 {
-    if (!isCaptureThreadInitialized) {
+    if (!isMIPICaptureThreadInitialized) {
         captureThread = new CaptureThread(this);
         connect(captureThread, &CaptureThread::resultReady, this, [=](QImage image){
             videoLabel->setPixmap(QPixmap::fromImage(image).scaled(videoLabel->size(), Qt::KeepAspectRatio));
@@ -127,16 +143,29 @@ void ShowMonitorPage::initMipiCaptureThread()
         captureThread->setThreadStart(true);
         captureThread->start();
 
-        isCaptureThreadInitialized = true;  // 标志设置为已初始化
+        isMIPICaptureThreadInitialized = true;  // 标志设置为已初始化
     }
 }
 
 void ShowMonitorPage::initRtspCaptureThread()
 {
     qDebug() << "initRtspCaptureThread";
+    if (!isrtspCaptureThreadInitialized) {
+        rtspThread = new RtspThread(this);
+        rtspThread->setRtspUrl(m_rtspUrl);
+        connect(rtspThread, &RtspThread::resultReady, this, [=](QImage image){
+            videoLabel->setPixmap(QPixmap::fromImage(image).scaled(videoLabel->size(), Qt::KeepAspectRatio));
+        });
+        rtspThread->setThreadStart(true);
+        rtspThread->start();
+        isrtspCaptureThreadInitialized = true;
+        qDebug() << "initRtspCaptureThread successful";
+    }
 }
 
 void ShowMonitorPage::setStreamUrl(const QString& url)
 {
     streamLabel->setText(QString("摄像头实时预览 [%1]").arg(url));
+
+
 }

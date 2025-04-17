@@ -1,4 +1,4 @@
-#include "../../include/components/camerathread.h"
+#include "../../../include/components/capture/camerathread.h"
 
 CameraThread::CameraThread(QObject *parent)
 {

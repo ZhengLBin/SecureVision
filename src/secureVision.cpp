@@ -142,7 +142,7 @@ void SecureVision::showMonitorStream(const QString& rtspUrl, const int m_type)
     if (!showMonitorPage) {
         qDebug() << "m_type-----------------" << m_type;
         qDebug() << "ShowMonitorPage constructed-----------------";
-        showMonitorPage = std::make_unique<ShowMonitorPage>(m_type, this); 
+        showMonitorPage = std::make_unique<ShowMonitorPage>(m_type, rtspUrl, this);
         globalStack->addWidget(showMonitorPage.get());
 
         // 监听 ShowMonitorPage 的返回信号
