@@ -1,0 +1,8 @@
+# Hashes of file build rules.
+1a6c525b5d7c6b59119c1b18575cbeed CMakeFiles/SecureVision_autogen
+63a810b58182a9cfc5a8806b9c7d4aec SecureVision_autogen/SJ56Y4VZUD/qrc_secureVision.cpp
+8e0f07969eadd4c1394424f551c3517a capture/CMakeFiles/capture_autogen
+6eb2df622a71e0a52bf14b260c6a0cb9 core/CMakeFiles/core_autogen
+ef7a9a9285885326803f6435ab11c78b main/CMakeFiles/main_autogen
+d9d471d62ac5415a51ec65d2be185c35 ui/CMakeFiles/ui_autogen
+50690a307c47b726a2dee1a03dd4cae0 widgets/CMakeFiles/widgets_autogen

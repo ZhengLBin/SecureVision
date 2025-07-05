@@ -1,0 +1,81 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 0,
+			"id" : "widgets::@f5f924eec1cd38265408"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "core::@57760688d1f824db5d9c"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "ui::@19b8bf288843bf358763"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "capture::@47b030bd5dc7e8704d57"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "main::@15c4a824ab2728a3f5e7"
+		}
+	],
+	"id" : "SecureVision_autogen::@6890427a1f51a3e7e1df",
+	"isGeneratorProvided" : true,
+	"name" : "SecureVision_autogen",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/atk_dlrv1126-Debug/CMakeFiles/SecureVision_autogen",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/atk_dlrv1126-Debug/CMakeFiles/SecureVision_autogen.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

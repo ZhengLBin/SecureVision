@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcore.a  CMakeFiles/core.dir/core_autogen/mocs_compilation.cpp.o CMakeFiles/core.dir/Device.cpp.o CMakeFiles/core.dir/DeviceManager.cpp.o
+/usr/bin/ranlib libcore.a

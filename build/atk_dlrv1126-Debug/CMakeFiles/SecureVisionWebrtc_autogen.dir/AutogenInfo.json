@@ -1,0 +1,79 @@
+{
+	"BUILD_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/SecureVisionWebrtc_autogen",
+	"CMAKE_BINARY_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc",
+	"CMAKE_EXECUTABLE" : "/usr/bin/cmake",
+	"CMAKE_SOURCE_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc",
+	"HEADERS" : 
+	[
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/securevision.h",
+			"MU",
+			"EWIEGA46WW/moc_securevision.cpp"
+		]
+	],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/SecureVisionWebrtc_autogen/include",
+	"MOC_COMPILATION_FILE" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/SecureVisionWebrtc_autogen/mocs_compilation.cpp",
+	"MOC_DEFINITIONS" : [ "QT_CORE_LIB", "QT_GUI_LIB", "QT_WIDGETS_LIB" ],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"/opt/atk-dlrv1126-toolchain/arm-buildroot-linux-gnueabihf/sysroot/usr/include/qt5",
+		"/opt/atk-dlrv1126-toolchain/arm-buildroot-linux-gnueabihf/sysroot/usr/include/qt5/QtWidgets",
+		"/opt/atk-dlrv1126-toolchain/arm-buildroot-linux-gnueabihf/sysroot/usr/include/qt5/QtGui",
+		"/opt/atk-dlrv1126-toolchain/arm-buildroot-linux-gnueabihf/sysroot/usr/include/qt5/QtCore",
+		"/opt/atk-dlrv1126-toolchain/mkspecs/devices/linux-buildroot-g++",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/arm-linux-gnueabihf/include/c++/8.3.0",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/arm-linux-gnueabihf/include/c++/8.3.0/arm-linux-gnueabihf",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/arm-linux-gnueabihf/include/c++/8.3.0/backward",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/8.3.0/include",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/8.3.0/include-fixed",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/arm-linux-gnueabihf/include",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/arm-linux-gnueabihf/libc/usr/include"
+	],
+	"MOC_MACRO_NAMES" : [ "Q_OBJECT", "Q_GADGET", "Q_NAMESPACE" ],
+	"MOC_OPTIONS" : [],
+	"MOC_PATH_PREFIX" : true,
+	"MOC_PREDEFS_CMD" : 
+	[
+		"/opt/atk-dlrv1126-toolchain/usr/bin/arm-linux-gnueabihf-g++",
+		"-dM",
+		"-E",
+		"-c",
+		"/usr/share/cmake-3.16/Modules/CMakeCXXCompilerABI.cpp"
+	],
+	"MOC_PREDEFS_FILE" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/SecureVisionWebrtc_autogen/moc_predefs.h",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : [],
+	"MULTI_CONFIG" : false,
+	"PARALLEL" : 4,
+	"PARSE_CACHE_FILE" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/CMakeFiles/SecureVisionWebrtc_autogen.dir/ParseCache.txt",
+	"QT_MOC_EXECUTABLE" : "/opt/atk-dlrv1126-toolchain/bin/moc",
+	"QT_UIC_EXECUTABLE" : "/opt/atk-dlrv1126-toolchain/bin/uic",
+	"QT_VERSION_MAJOR" : 5,
+	"SETTINGS_FILE" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/CMakeFiles/SecureVisionWebrtc_autogen.dir/AutogenUsed.txt",
+	"SOURCES" : 
+	[
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/main.cpp",
+			"MU"
+		],
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/securevision.cpp",
+			"MU"
+		]
+	],
+	"UIC_OPTIONS" : [],
+	"UIC_SEARCH_PATHS" : [],
+	"UIC_SKIP" : [],
+	"UIC_UI_FILES" : [],
+	"VERBOSITY" : 0
+}

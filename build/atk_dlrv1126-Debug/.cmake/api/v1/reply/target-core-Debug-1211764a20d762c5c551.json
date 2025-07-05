@@ -1,0 +1,168 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "core/libcore.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"core/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 11,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 20,
+				"parent" : 2
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-DQT_QML_DEBUG -g  "
+				},
+				{
+					"fragment" : "-std=gnu++14"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 0,
+					"path" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/core/core_autogen/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/widgets"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/core"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/capture"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/main"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/zhenglongbin/code/rv1126/external/rkmedia/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/zhenglongbin/code/rv1126/app/alientek/atk_rkmedia/library/include"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 0,
+			"id" : "core_autogen::@57760688d1f824db5d9c"
+		}
+	],
+	"id" : "core::@57760688d1f824db5d9c",
+	"name" : "core",
+	"nameOnDisk" : "libcore.a",
+	"paths" : 
+	{
+		"build" : "core",
+		"source" : "core"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				3,
+				4
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/atk_dlrv1126-Debug/core/core_autogen/mocs_compilation.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "core/Device.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "core/DeviceManager.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "core/Device.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "core/DeviceManager.h",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

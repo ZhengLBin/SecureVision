@@ -1,0 +1,2 @@
+/usr/bin/ar qc libwidgets.a  CMakeFiles/widgets.dir/widgets_autogen/mocs_compilation.cpp.o CMakeFiles/widgets.dir/AudioUploader.cpp.o CMakeFiles/widgets.dir/CardWidget.cpp.o CMakeFiles/widgets.dir/MonitorWidget.cpp.o CMakeFiles/widgets.dir/QcustomPlot.cpp.o CMakeFiles/widgets.dir/RecordingDialog.cpp.o CMakeFiles/widgets.dir/WaveFormManager.cpp.o
+/usr/bin/ranlib libwidgets.a

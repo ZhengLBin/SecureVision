@@ -1,0 +1,236 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4,
+						5
+					],
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				},
+				{
+					"build" : "widgets",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "widgets",
+					"targetIndexes" : 
+					[
+						10,
+						11
+					]
+				},
+				{
+					"build" : "core",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "core",
+					"targetIndexes" : 
+					[
+						4,
+						5
+					]
+				},
+				{
+					"build" : "ui",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "ui",
+					"targetIndexes" : 
+					[
+						8,
+						9
+					]
+				},
+				{
+					"build" : "capture",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "capture",
+					"targetIndexes" : 
+					[
+						2,
+						3
+					]
+				},
+				{
+					"build" : "main",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "main",
+					"targetIndexes" : 
+					[
+						6,
+						7
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					],
+					"name" : "SecureVision",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "SecureVision::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SecureVision-Debug-6f927ada7452726d2a91.json",
+					"name" : "SecureVision",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SecureVision_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SecureVision_autogen-Debug-3adefbaccf5aaf70d9b4.json",
+					"name" : "SecureVision_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "capture::@47b030bd5dc7e8704d57",
+					"jsonFile" : "target-capture-Debug-d80f71f0555f48b99012.json",
+					"name" : "capture",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "capture_autogen::@47b030bd5dc7e8704d57",
+					"jsonFile" : "target-capture_autogen-Debug-05deb4cbacc317f47690.json",
+					"name" : "capture_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "core::@57760688d1f824db5d9c",
+					"jsonFile" : "target-core-Debug-1211764a20d762c5c551.json",
+					"name" : "core",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "core_autogen::@57760688d1f824db5d9c",
+					"jsonFile" : "target-core_autogen-Debug-5b1aabae1622533d76ad.json",
+					"name" : "core_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "main::@15c4a824ab2728a3f5e7",
+					"jsonFile" : "target-main-Debug-82b10a87908e4ea777f5.json",
+					"name" : "main",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "main_autogen::@15c4a824ab2728a3f5e7",
+					"jsonFile" : "target-main_autogen-Debug-76e8e380865be2c910e4.json",
+					"name" : "main_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "ui::@19b8bf288843bf358763",
+					"jsonFile" : "target-ui-Debug-aba8c73a6f6470f28cc1.json",
+					"name" : "ui",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "ui_autogen::@19b8bf288843bf358763",
+					"jsonFile" : "target-ui_autogen-Debug-fea390e74b18bb650342.json",
+					"name" : "ui_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "widgets::@f5f924eec1cd38265408",
+					"jsonFile" : "target-widgets-Debug-61b29f957c00b1aeed0f.json",
+					"name" : "widgets",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "widgets_autogen::@f5f924eec1cd38265408",
+					"jsonFile" : "target-widgets_autogen-Debug-96fdc186c61eae9172e5.json",
+					"name" : "widgets_autogen",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug",
+		"source" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 0
+	}
+}

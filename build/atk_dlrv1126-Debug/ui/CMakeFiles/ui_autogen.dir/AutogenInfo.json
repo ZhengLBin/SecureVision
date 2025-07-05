@@ -1,0 +1,113 @@
+{
+	"BUILD_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/ui/ui_autogen",
+	"CMAKE_BINARY_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/ui",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui",
+	"CMAKE_EXECUTABLE" : "/usr/bin/cmake",
+	"CMAKE_SOURCE_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc",
+	"HEADERS" : 
+	[
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui/AudioDetectionPage.h",
+			"MU",
+			"EWIEGA46WW/moc_AudioDetectionPage.cpp"
+		],
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui/DetectionListPage.h",
+			"MU",
+			"EWIEGA46WW/moc_DetectionListPage.cpp"
+		],
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui/MonitorListPage.h",
+			"MU",
+			"EWIEGA46WW/moc_MonitorListPage.cpp"
+		],
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui/ShowMonitorPage.h",
+			"MU",
+			"EWIEGA46WW/moc_ShowMonitorPage.cpp"
+		],
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui/VideoDetectionPage.h",
+			"MU",
+			"EWIEGA46WW/moc_VideoDetectionPage.cpp"
+		]
+	],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/ui/ui_autogen/include",
+	"MOC_COMPILATION_FILE" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/ui/ui_autogen/mocs_compilation.cpp",
+	"MOC_DEFINITIONS" : [],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/widgets",
+		"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/core",
+		"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui",
+		"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/capture",
+		"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/main",
+		"/home/zhenglongbin/code/rv1126/external/rkmedia/include",
+		"/home/zhenglongbin/code/rv1126/app/alientek/atk_rkmedia/library/include",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/arm-linux-gnueabihf/include/c++/8.3.0",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/arm-linux-gnueabihf/include/c++/8.3.0/arm-linux-gnueabihf",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/arm-linux-gnueabihf/include/c++/8.3.0/backward",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/8.3.0/include",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/8.3.0/include-fixed",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/arm-linux-gnueabihf/include",
+		"/opt/atk-dlrv1126-toolchain/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/arm-linux-gnueabihf/libc/usr/include"
+	],
+	"MOC_MACRO_NAMES" : [ "Q_OBJECT", "Q_GADGET", "Q_NAMESPACE" ],
+	"MOC_OPTIONS" : [],
+	"MOC_PATH_PREFIX" : true,
+	"MOC_PREDEFS_CMD" : 
+	[
+		"/opt/atk-dlrv1126-toolchain/usr/bin/arm-linux-gnueabihf-g++",
+		"-dM",
+		"-E",
+		"-c",
+		"/usr/share/cmake-3.16/Modules/CMakeCXXCompilerABI.cpp"
+	],
+	"MOC_PREDEFS_FILE" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/ui/ui_autogen/moc_predefs.h",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : [],
+	"MULTI_CONFIG" : false,
+	"PARALLEL" : 4,
+	"PARSE_CACHE_FILE" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/ui/CMakeFiles/ui_autogen.dir/ParseCache.txt",
+	"QT_MOC_EXECUTABLE" : "/opt/atk-dlrv1126-toolchain/bin/moc",
+	"QT_UIC_EXECUTABLE" : "/opt/atk-dlrv1126-toolchain/bin/uic",
+	"QT_VERSION_MAJOR" : 5,
+	"SETTINGS_FILE" : "/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/build/atk_dlrv1126-Debug/ui/CMakeFiles/ui_autogen.dir/AutogenUsed.txt",
+	"SOURCES" : 
+	[
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui/AudioDetectionPage.cpp",
+			"MU"
+		],
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui/DetectionListPage.cpp",
+			"MU"
+		],
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui/MonitorListPage.cpp",
+			"MU"
+		],
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui/ShowMonitorPage.cpp",
+			"MU"
+		],
+		[
+			"/home/zhenglongbin/code/rv1126/projects/SecureVisionWebrtc/ui/VideoDetectionPage.cpp",
+			"MU"
+		]
+	],
+	"UIC_OPTIONS" : [],
+	"UIC_SEARCH_PATHS" : [],
+	"UIC_SKIP" : [],
+	"UIC_UI_FILES" : [],
+	"VERBOSITY" : 0
+}
