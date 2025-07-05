@@ -1,0 +1,34 @@
+# --- Build directories ---
+build/
+*/build/
+*/*/build/
+*.xcodeproj/
+*.xcworkspace/
+
+# --- CMake generated files ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+*.ninja
+.ninja_deps
+.ninja_log
+
+# --- Qt Creator / CLion user files ---
+CMakeLists.txt.user
+*.user
+.idea/
+.vscode/
+
+# --- Binaries and executables ---
+bin/
+lib/
+*.so
+*.dylib
+*.dll
+*.exe
+
+# --- OS generated files ---
+.DS_Store
+Thumbs.db
