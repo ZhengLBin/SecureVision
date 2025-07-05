@@ -1,2 +1,0 @@
-/usr/bin/ar qc libmain.a  CMakeFiles/main.dir/main_autogen/mocs_compilation.cpp.o CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/secureVision.cpp.o
-/usr/bin/ranlib libmain.a

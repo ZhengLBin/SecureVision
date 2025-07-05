@@ -1,2 +1,0 @@
-/usr/bin/ar qc libui.a  CMakeFiles/ui.dir/ui_autogen/mocs_compilation.cpp.o CMakeFiles/ui.dir/AudioDetectionPage.cpp.o CMakeFiles/ui.dir/VideoDetectionPage.cpp.o CMakeFiles/ui.dir/MonitorListPage.cpp.o CMakeFiles/ui.dir/DetectionListPage.cpp.o CMakeFiles/ui.dir/ShowMonitorPage.cpp.o
-/usr/bin/ranlib libui.a

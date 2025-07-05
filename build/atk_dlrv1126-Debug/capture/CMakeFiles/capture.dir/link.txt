@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcapture.a  CMakeFiles/capture.dir/capture_autogen/mocs_compilation.cpp.o CMakeFiles/capture.dir/camerathread.cpp.o CMakeFiles/capture.dir/rtspthread.cpp.o
-/usr/bin/ranlib libcapture.a
