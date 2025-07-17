@@ -10,7 +10,6 @@ RtspThread::~RtspThread() {
 }
 
 void RtspThread::setRtspUrl(const QString &url) {
-    qDebug() << "setRtspUrl in RtspThread" << url;
     m_url = url;
 }
 
@@ -66,8 +65,7 @@ void RtspThread::run() {
     }
 
     codec_ctx = avcodec_alloc_context3(codec);
-    qDebug() << "Video stream codec:" << codec_ctx->codec_id;
-    qDebug() << "Source resolution:" << codec_ctx->width << "x" << codec_ctx->height;
+
     avcodec_parameters_to_context(codec_ctx, fmt_ctx->streams[video_stream_index]->codecpar);
     if (avcodec_open2(codec_ctx, codec, nullptr) < 0) {
         qDebug() << "cant open codec";

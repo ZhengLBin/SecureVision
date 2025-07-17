@@ -46,7 +46,6 @@ public:
     }
 
     ~CaptureThread() override{
-        qDebug() << "~CaptureThread deconstruct------------";
         m_CameraThread->setFlag(true);
         m_CameraThread->quit();
         m_CameraThread->wait();

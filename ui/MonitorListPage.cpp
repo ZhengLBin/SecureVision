@@ -12,8 +12,14 @@ MonitorListPage::MonitorListPage(QWidget* parent)
 {
     // 初始化设备（实际项目中可以从配置文件或数据库加载）
     m_deviceManager.addDevice("MIPI 01");
-    m_deviceManager.addDevice("IP 01", "rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/101?transportmode=unicast");
-    m_deviceManager.addDevice("IP 02", "rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/201?transportmode=unicast");
+
+    m_deviceManager.addDevice("IP 01",
+                              QUrl("rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/101?transportmode=unicast"));
+
+    m_deviceManager.addDevice("IP 02",
+                              QUrl("rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/201?transportmode=unicast"));
+
+    m_deviceManager.addUSBDevice("USB", "/dev/video45");
     setupCards();
 }
 
@@ -37,7 +43,6 @@ void MonitorListPage::setupCards()
         // 计算当前行的起始和结束索引
         int startIdx = row * cardsPerRow;
         int endIdx = qMin(startIdx + cardsPerRow, totalCards);
-        //qDebug() << "Type of cardLogoPath:" << typeid(cardLogoPath).name();
 
 
         // 添加当前行的卡片

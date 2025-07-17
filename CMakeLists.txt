@@ -34,16 +34,38 @@ set(FFMPEG_INCLUDE_DIRS
     /home/zhenglongbin/code/rv1126/buildroot/output/alientek_rv1126/build/ffmpeg-4.1.3
 )
 
+# 6. OpenCV 配置 - 优化版本
+# 设置 OpenCV 根目录
+set(OpenCV_ROOT ${CMAKE_SOURCE_DIR}/buildroot/output/alientek_rv1126/build/opencv3-3.4.12/buildroot-build)
 
+# 设置包含路径
+set(OpenCV_INCLUDE_DIRS
+    ${OpenCV_ROOT}/../include
+    ${OpenCV_ROOT}/../include/opencv
+    ${OpenCV_ROOT}/../include/opencv2
+)
 
-# 6. 查找 Qt5 库（必须在设置 SYSROOT 后）
+# 设置库目录
+set(OpenCV_LIB_DIR ${OpenCV_ROOT}/lib)
+
+# 手动设置 OpenCV 库文件
+set(OpenCV_LIBS
+    opencv_core
+    opencv_imgproc
+    opencv_videoio
+    opencv_highgui
+)
+
+# 7. 查找 Qt5 库（必须在设置 SYSROOT 后）
 set(Qt5_DIR ${SYSROOT_PATH}/usr/lib/cmake/Qt5)  # 根据实际路径调整
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Multimedia Network MultimediaWidgets PrintSupport)
 
+# 8. 包含目录设置
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${FFMPEG_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
     # RKMedia 路径
     /home/zhenglongbin/code/rv1126/external/rkmedia/include
     /home/zhenglongbin/code/rv1126/app/alientek/atk_rkmedia/library/include
@@ -59,14 +81,23 @@ if(Qt5_FOUND)
     message(STATUS "Qt5Gui include dirs: ${Qt5Gui_INCLUDE_DIRS}")
 endif()
 
-# 8. 添加子目录
+# 9. 添加库文件搜索路径
+link_directories(
+    ${OpenCV_LIB_DIR}
+    # 其他可能的库目录...
+)
+
+# 10. 添加子目录
+add_subdirectory(ai)
 add_subdirectory(widgets)
 add_subdirectory(core)
 add_subdirectory(ui)
 add_subdirectory(capture)
 add_subdirectory(main)
 
-# 9. 主程序配置
+# add_subdirectory(record)
+
+# 11. 主程序配置
 set(RESOURCE_FILE Resource/secureVision.qrc)
 
 # 生成资源文件（Qt5 方式）
@@ -77,11 +108,12 @@ add_executable(SecureVision
     # 其他源文件...
 )
 
-# 10. 链接库配置
+# 12. 链接库配置
 target_link_libraries(SecureVision PRIVATE
     capture
     widgets
     core
+    ai
     ui
     main
 
@@ -104,15 +136,26 @@ target_link_libraries(SecureVision PRIVATE
     atk_camera
     sample_common_isp
     pthread
+
+    ${OpenCV_LIBS}  # 链接 OpenCV 库
 )
 
-# 11. 安装设置
+# 13. 安装设置
 set_target_properties(SecureVision PROPERTIES
     INSTALL_RPATH "/oem/usr/lib"
     BUILD_WITH_INSTALL_RPATH TRUE
 )
 
-# 12. 添加安装规则
+# 14. 添加安装规则
 install(TARGETS SecureVision
     RUNTIME DESTINATION bin
 )
+
+# 15. 打印配置信息用于调试
+message(STATUS "==============================================")
+message(STATUS "OpenCV Configuration:")
+message(STATUS "  OpenCV_ROOT: ${OpenCV_ROOT}")
+message(STATUS "  Include dirs: ${OpenCV_INCLUDE_DIRS}")
+message(STATUS "  Library dir: ${OpenCV_LIB_DIR}")
+message(STATUS "  Libraries: ${OpenCV_LIBS}")
+message(STATUS "==============================================")

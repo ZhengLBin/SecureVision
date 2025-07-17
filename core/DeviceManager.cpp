@@ -11,8 +11,12 @@ void DeviceManager::addDevice(const QString& name) {
 }
 
 // IP 摄像头（有 RTSP）
-void DeviceManager::addDevice(const QString& name, const QString& rtspUrl) {
+void DeviceManager::addDevice(const QString& name, const QUrl& rtspUrl) {
     m_devices.append(Device(name, Device::DeviceType::IP, rtspUrl));
+}
+
+void DeviceManager::addUSBDevice(const QString& name, const QString& devicePath) {
+    m_devices.append(Device(name, Device::DeviceType::USB, devicePath));
 }
 
 

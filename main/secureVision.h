@@ -8,6 +8,9 @@
 
 #include "../capture/capturethread.h"
 #include "../capture/rtspthread.h"
+#include "../capture/usbcapturethread.h"
+#include "../ai/aidetectionthread.h"
+#include "../ai/aitypes.h"
 
 class MonitorListPage;
 class DetectionListPage;
@@ -23,6 +26,8 @@ public:
     explicit SecureVision(QWidget* parent = nullptr);
     ~SecureVision() override;
 
+    AIDetectionThread* getAIThread() const { return aiThread; }
+
 private slots:  
     void handleDetectClick(int index);  // 处理检测页卡片点击
     void returnToDetectionPage();     // 返回篡改检测页
@@ -30,6 +35,10 @@ private slots:
 
     void showMonitorStream(const QString& rtspUrl, const int m_type);  // 进入 ShowMonitorPage
     void returnToMonitorList();  // 返回 MonitorListPage
+
+    // 新增AI相关槽函数
+    void onDetectionResult(const DetectionResult& result);
+    void onRecordTrigger(RecordTrigger trigger, const QImage& frame);
 
 private:
     void initializeWindow();
@@ -41,6 +50,7 @@ private:
     CaptureThread* mipiThread = nullptr;
     RtspThread* rtspThread1 = nullptr;
     RtspThread* rtspThread2 = nullptr;
+    USBCaptureThread* usbThread = nullptr;
 
     // UI Components
     QStackedWidget* globalStack;     // 全局堆栈：管理两种模式
@@ -55,6 +65,14 @@ private:
     std::unique_ptr<DetectionListPage> detectionPage;
     std::unique_ptr<VideoDetectionPage> videoPage;
     std::unique_ptr<AudioDetectionPage> audioPage;
+
+    // 新增AI相关成员
+    AIDetectionThread* aiThread;
+    AIConfig aiConfig;
+
+    // 新增方法声明
+    void setupAIThread();
+    void connectAISignals();
 };
 
 #endif // SECUREVISION_H

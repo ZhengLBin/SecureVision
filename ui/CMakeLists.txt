@@ -32,6 +32,7 @@ target_include_directories(ui
 
     ../widgets
     ../core
+    ../ai
 )
 
 # 添加更完整的链接库
@@ -44,4 +45,5 @@ target_link_libraries(ui PUBLIC
     Qt5::MultimediaWidgets  # 添加 MultimediaWidgets
     widgets
     core
+    ai
 )

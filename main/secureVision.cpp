@@ -18,6 +18,10 @@ SecureVision::SecureVision(QWidget* parent)
       videoPage(std::make_unique<VideoDetectionPage>(this)),
       audioPage(std::make_unique<AudioDetectionPage>(this))
 {
+
+    qRegisterMetaType<DetectionResult>("DetectionResult");
+    qRegisterMetaType<RecordTrigger>("RecordTrigger");
+
     initializeWindow();
     setupUi();
     setupGlobalStack();
@@ -137,19 +141,62 @@ void SecureVision::setupThread () {
     mipiThread = new CaptureThread(this);
     mipiThread->setThreadStart(true);
     mipiThread->start();
-    qDebug() << "CaptureThread started";
 
     rtspThread1 = new RtspThread(this);
     rtspThread1->setRtspUrl("rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/101?transportmode=unicast"); // 后续可 set
     rtspThread1->setThreadStart(true);
     rtspThread1->start();
-    qDebug() << "rtspThread1 started";
 
     rtspThread2 = new RtspThread(this);
     rtspThread2->setRtspUrl("rtsp://admin:haikang123@192.168.16.240:554/Streaming/Channels/201?transportmode=unicast"); // 后续可 set
     rtspThread2->setThreadStart(true);
     rtspThread2->start();
-    qDebug() << "rtspThread2 started";
+
+    usbThread = new USBCaptureThread(this);
+    usbThread->setDevice("/dev/video45");
+    usbThread->setThreadStart(true);
+    usbThread->start();
+
+    setupAIThread();
+}
+
+void SecureVision::setupAIThread()
+{
+    aiThread = new AIDetectionThread(this);
+
+    // 设置默认AI配置
+    aiConfig.enableAI = false;  // 默认关闭，通过UI开启
+    aiConfig.enableMotionDetect = true;
+    aiConfig.motionThreshold = 0.3f;
+    aiConfig.skipFrames = 2;  // 每3帧检测一次
+
+    aiThread->setConfig(aiConfig);
+    connectAISignals();
+
+    qDebug() << "AI Thread initialized";
+}
+
+void SecureVision::connectAISignals()
+{
+    connect(aiThread, &AIDetectionThread::detectionResult,
+            this, &SecureVision::onDetectionResult);
+    connect(aiThread, &AIDetectionThread::recordTrigger,
+            this, &SecureVision::onRecordTrigger);
+}
+
+void SecureVision::onDetectionResult(const DetectionResult& result)
+{
+    // 暂时只打印调试信息
+    if (result.hasMotion) {
+        qDebug() << "Motion detected at:" << result.timestamp;
+    }
+}
+
+void SecureVision::onRecordTrigger(RecordTrigger trigger, const QImage& frame)
+{
+    // 暂时只打印调试信息
+    qDebug() << "Record triggered by:" << (int)trigger;
+    // TODO: 下个阶段实现录制功能
 }
 
 void SecureVision::switchRightPage(int index)
@@ -160,9 +207,7 @@ void SecureVision::switchRightPage(int index)
 void SecureVision::showMonitorStream(const QString& rtspUrl, const int m_type)
 {
     if (!showMonitorPage) {
-        qDebug() << "m_type-----------------" << m_type;
-        qDebug() << "ShowMonitorPage constructed-----------------";
-        showMonitorPage = std::make_unique<ShowMonitorPage>(m_type, rtspUrl, mipiThread, rtspThread1, rtspThread2, this);
+        showMonitorPage = std::make_unique<ShowMonitorPage>(m_type, rtspUrl, mipiThread, rtspThread1, rtspThread2, usbThread, this);
         globalStack->addWidget(showMonitorPage.get());
 
         // 监听 ShowMonitorPage 的返回信号
@@ -192,7 +237,6 @@ void SecureVision::returnToMonitorList()
 {
     globalStack->setCurrentIndex(0);
     rightStack->setCurrentIndex(0);
-    qDebug() << "returnToMonitorList---------";
     showMonitorPage->hide(); 
     // if (showMonitorPage) {
     //     globalStack->removeWidget(showMonitorPage.get());

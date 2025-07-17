@@ -10,7 +10,8 @@ public:
 
     // 添加设备
     void addDevice(const QString& name);
-    void addDevice(const QString& name, const QString& rtspUrl);
+    void addDevice(const QString& name, const QUrl& rtspUrl);
+    void addUSBDevice(const QString& name, const QString& devicePath);
 
     // 获取设备列表
     const QVector<Device>& devices() const;

@@ -5,6 +5,7 @@ set(WIDGET_SOURCES
     QcustomPlot.cpp
     RecordingDialog.cpp
     WaveFormManager.cpp
+    aicontrolwidget.cpp
 )
 
 add_library(widgets STATIC
@@ -15,6 +16,7 @@ add_library(widgets STATIC
     QcustomPlot.h
     RecordingDialog.h
     WaveFormManager.h
+    aicontrolwidget.h
 )
 
 target_include_directories(widgets
