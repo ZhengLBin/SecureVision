@@ -58,7 +58,31 @@ set(OpenCV_LIBS
 
 # 7. 查找 Qt5 库（必须在设置 SYSROOT 后）
 set(Qt5_DIR ${SYSROOT_PATH}/usr/lib/cmake/Qt5)  # 根据实际路径调整
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Multimedia Network MultimediaWidgets PrintSupport)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Multimedia Network MultimediaWidgets PrintSupport Sql)
+
+
+# 7.1 RockX和RKNN库配置 (新增)
+# 根据指导文档，RockX相关库的位置
+set(ROCKX_INCLUDE_DIR ${SYSROOT_PATH}/usr/include)
+set(ROCKX_LIB_DIR ${SYSROOT_PATH}/usr/lib)
+
+# 查找RockX相关库
+find_library(ROCKX_LIB rockx PATHS ${ROCKX_LIB_DIR})
+find_library(RKNN_API_LIB rknn_api PATHS ${ROCKX_LIB_DIR})
+
+if(NOT ROCKX_LIB)
+    message(FATAL_ERROR "RockX library not found in ${ROCKX_LIB_DIR}")
+endif()
+
+if(NOT RKNN_API_LIB)
+    message(FATAL_ERROR "RKNN API library not found in ${ROCKX_LIB_DIR}")
+endif()
+
+# 7.2 SQLite3库配置 (新增)
+find_library(SQLITE3_LIB sqlite3 PATHS ${ROCKX_LIB_DIR})
+if(NOT SQLITE3_LIB)
+    message(FATAL_ERROR "SQLite3 library not found")
+endif()
 
 # 8. 包含目录设置
 include_directories(
@@ -70,6 +94,9 @@ include_directories(
     /home/zhenglongbin/code/rv1126/external/rkmedia/include
     /home/zhenglongbin/code/rv1126/app/alientek/atk_rkmedia/library/include
     ${Qt5Multimedia_INCLUDE_DIRS}
+    # 新增RockX相关路径
+    ${ROCKX_INCLUDE_DIR}/rockx
+    ${ROCKX_INCLUDE_DIR}/rknn
 )
 
 if(Qt5_FOUND)
@@ -138,6 +165,10 @@ target_link_libraries(SecureVision PRIVATE
     pthread
 
     ${OpenCV_LIBS}  # 链接 OpenCV 库
+
+    ${ROCKX_LIB}
+    ${RKNN_API_LIB}
+    ${SQLITE3_LIB}
 )
 
 # 13. 安装设置
@@ -158,4 +189,12 @@ message(STATUS "  OpenCV_ROOT: ${OpenCV_ROOT}")
 message(STATUS "  Include dirs: ${OpenCV_INCLUDE_DIRS}")
 message(STATUS "  Library dir: ${OpenCV_LIB_DIR}")
 message(STATUS "  Libraries: ${OpenCV_LIBS}")
+message(STATUS "==============================================")
+
+message(STATUS "==============================================")
+message(STATUS "RockX Configuration:")
+message(STATUS "  RockX lib: ${ROCKX_LIB}")
+message(STATUS "  RKNN API lib: ${RKNN_API_LIB}")
+message(STATUS "  SQLite3 lib: ${SQLITE3_LIB}")
+message(STATUS "  Include dir: ${ROCKX_INCLUDE_DIR}")
 message(STATUS "==============================================")

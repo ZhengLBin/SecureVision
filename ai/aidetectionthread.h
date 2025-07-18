@@ -7,6 +7,7 @@
 #include <QImage>
 #include "aitypes.h"
 #include "motiondetector.h"
+#include "facerecognitionmanager.h"
 
 class AIDetectionThread : public QThread
 {
@@ -24,6 +25,15 @@ public:
 
     // 输入接口
     void addFrame(const QImage& frame);
+
+    //  人脸识别相关方法
+    void setFaceRecognitionEnabled(bool enabled);
+    bool isFaceRecognitionEnabled() const { return m_faceRecognitionEnabled; }
+
+    //  人脸管理方法
+    bool registerFace(const QString& name, const QImage& faceImage);
+    QStringList getRegisteredFaces();
+    bool deleteFace(const QString& name);
 
 signals:
     void detectionResult(const DetectionResult& result);
@@ -53,6 +63,24 @@ private:
     DetectionResult processFrame(const QImage& frame);
     bool shouldRecord(const DetectionResult& result);
     void clearQueue();
+
+    //  人脸识别相关
+    FaceRecognitionManager* m_faceManager;
+    bool m_faceRecognitionEnabled;
+    int m_faceDetectionFrameCounter;
+
+    //  初始化方法
+    bool initializeFaceRecognition();
+
+    //  处理方法
+    DetectionResult processFrameWithFaces(const QImage& frame);
+    bool shouldProcessFaces();
+
+private slots:
+    //  人脸识别信号处理
+    void onFaceDetected(const QVector<FaceInfo>& faces);
+    void onFaceRecognized(const QString& name, float similarity);
+    void onUnknownFaceDetected(const QRect& faceRect);
 };
 
 #endif // AIDETECTIONTHREAD_H

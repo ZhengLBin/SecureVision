@@ -4,6 +4,8 @@ set(UI_SOURCES
     MonitorListPage.cpp
     DetectionListPage.cpp
     ShowMonitorPage.cpp
+    facemanagementwidget.cpp
+    faceregistrationdialog.cpp
 )
 
 set(UI_HEADERS
@@ -12,6 +14,8 @@ set(UI_HEADERS
     MonitorListPage.h
     DetectionListPage.h
     ShowMonitorPage.h
+    faceregistrationdialog.h
+    facemanagementwidget.h
 )
 
 add_library(ui STATIC

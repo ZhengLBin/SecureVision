@@ -186,10 +186,62 @@ void SecureVision::connectAISignals()
 
 void SecureVision::onDetectionResult(const DetectionResult& result)
 {
-    // 暂时只打印调试信息
+    // 处理人脸检测结果
+    if (result.hasFaceDetection) {
+        qDebug() << QString("Face detection: %1 faces detected, %2 recognized")
+        .arg(result.totalFaceCount)
+            .arg(result.recognizedFaceCount);
+
+        // 更新界面显示人脸检测结果
+        updateFaceDetectionStatus(result);
+    }
+
+    // 现有的运动检测处理...
     if (result.hasMotion) {
         qDebug() << "Motion detected at:" << result.timestamp;
     }
+}
+
+void SecureVision::updateFaceDetectionStatus(const DetectionResult& result)
+{
+    // 更新状态显示（可以添加到状态栏或其他UI组件）
+    QString statusText = QString("人脸: %1/%2")
+                             .arg(result.recognizedFaceCount)
+                             .arg(result.totalFaceCount);
+
+    // TODO: 更新到具体的UI组件
+    // statusLabel->setText(statusText);
+}
+
+void SecureVision::openFaceRegistration()
+{
+    if (!aiThread || !aiThread->isRunning()) {
+        QMessageBox::warning(this, "错误", "AI检测线程未运行");
+        return;
+    }
+
+    // 获取人脸识别管理器（需要在AIDetectionThread中添加相应接口）
+    auto faceManager = aiThread->getFaceRecognitionManager();
+    if (!faceManager) {
+        QMessageBox::warning(this, "错误", "人脸识别功能未初始化");
+        return;
+    }
+
+    FaceRegistrationDialog dialog(faceManager, this);
+
+    // 如果有实时画面，传递给对话框用于捕获
+    if (mipiThread && mipiThread->isRunning()) {
+        QImage currentFrame = mipiThread->getCurrentFrame();  // 需要在CaptureThread中实现
+        dialog.setLiveImage(currentFrame);
+    }
+
+    connect(&dialog, &FaceRegistrationDialog::faceRegistered,
+            this, [this](const QString& name) {
+                qDebug() << "Face registered successfully:" << name;
+                // 可以更新UI显示已注册人脸列表
+            });
+
+    dialog.exec();
 }
 
 void SecureVision::onRecordTrigger(RecordTrigger trigger, const QImage& frame)

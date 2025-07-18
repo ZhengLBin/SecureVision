@@ -96,8 +96,8 @@ void AIDetectionThread::run()
         // 检查是否需要录制
         if (shouldRecord(result)) {
             RecordTrigger trigger = RecordTrigger::None;
-            if (result.hasMotion) trigger = RecordTrigger::MotionDetected;
-            if (!result.faces.isEmpty()) trigger = RecordTrigger::FaceDetected;
+            if (result.hasMotion) trigger = RecordTrigger::Motion;
+            if (!result.faces.isEmpty()) trigger = RecordTrigger::Face;
 
             emit recordTrigger(trigger, frame);
         }
@@ -106,32 +106,136 @@ void AIDetectionThread::run()
     qDebug() << "AIDetectionThread finished";
 }
 
+bool AIDetectionThread::initializeFaceRecognition()
+{
+    m_faceManager = new FaceRecognitionManager(this);
+
+    // 连接信号
+    connect(m_faceManager, &FaceRecognitionManager::faceDetected,
+            this, &AIDetectionThread::onFaceDetected);
+    connect(m_faceManager, &FaceRecognitionManager::faceRecognized,
+            this, &AIDetectionThread::onFaceRecognized);
+    connect(m_faceManager, &FaceRecognitionManager::unknownFaceDetected,
+            this, &AIDetectionThread::onUnknownFaceDetected);
+
+    // 初始化人脸识别管理器
+    if (!m_faceManager->initialize()) {
+        qDebug() << "Failed to initialize face recognition manager";
+        delete m_faceManager;
+        m_faceManager = nullptr;
+        return false;
+    }
+
+    qDebug() << "Face recognition initialized successfully";
+    return true;
+}
+
 DetectionResult AIDetectionThread::processFrame(const QImage& frame)
 {
     DetectionResult result;
     result.timestamp = QDateTime::currentDateTime();
 
-    // 移动检测
-    if (m_config.enableMotionDetect) {
+    QTime totalTimer;
+    totalTimer.start();
+
+    // 1. 运动检测 (现有逻辑)
+    if (m_config.enableMotionDetect && m_motionDetector) {
+        QTime motionTimer;
+        motionTimer.start();
+
         QRect motionArea;
         result.hasMotion = m_motionDetector->detectMotion(frame, motionArea);
         result.motionArea = motionArea;
 
-        // 添加调试输出
-        if (result.hasMotion) {
-            qDebug() << "AIDetectionThread: Motion detected at"
-                     << result.timestamp.toString("hh:mm:ss.zzz")
-                     << "Area:" << result.motionArea;
+        result.motionProcessTime = motionTimer.elapsed();
+    }
+
+    // 2. 🆕 人脸检测和识别
+    if (m_config.enableFaceDetect && m_faceManager && shouldProcessFaces()) {
+        QTime faceTimer;
+        faceTimer.start();
+
+        if (m_config.enableFaceRecognition) {
+            // 执行检测+识别
+            result.faces = m_faceManager->detectAndRecognizeFaces(frame);
+        } else {
+            // 仅执行检测
+            result.faces = m_faceManager->detectFaces(frame);
+        }
+
+        // 更新统计信息
+        result.hasFaceDetection = !result.faces.isEmpty();
+        result.totalFaceCount = result.faces.size();
+        result.recognizedFaceCount = 0;
+
+        for (const auto& face : result.faces) {
+            if (face.isRecognized) {
+                result.recognizedFaceCount++;
+            }
+        }
+
+        result.faceDetectionTime = faceTimer.elapsed();
+
+        // 触发录制逻辑
+        if (result.hasFaceDetection) {
+            if (result.recognizedFaceCount > 0 && m_config.recordKnownFaces) {
+                emit recordTrigger(RecordTrigger::Face, frame);
+            } else if (result.recognizedFaceCount < result.totalFaceCount && m_config.recordUnknownFaces) {
+                emit recordTrigger(RecordTrigger::UnknownFace, frame);
+            }
         }
     }
 
-    // 人脸检测 (暂时模拟，下个阶段实现)
-    if (m_config.enableFaceDetect && result.hasMotion) {
-        // TODO: 添加RKNN人脸检测
-        // result.faces = m_faceDetector->detect(frame);
+    return result;
+}
+
+bool AIDetectionThread::shouldProcessFaces()
+{
+    // 智能调度：根据运动检测结果调整人脸检测频率
+    m_faceDetectionFrameCounter++;
+
+    if (m_lastResult.hasMotion) {
+        // 有运动时增加人脸检测频率
+        return m_faceDetectionFrameCounter % 2 == 0;
+    } else {
+        // 无运动时降低人脸检测频率
+        return m_faceDetectionFrameCounter % 5 == 0;
+    }
+}
+
+// 🆕 人脸识别相关槽函数
+void AIDetectionThread::onFaceDetected(const QVector<FaceInfo>& faces)
+{
+    qDebug() << QString("Detected %1 faces").arg(faces.size());
+}
+
+void AIDetectionThread::onFaceRecognized(const QString& name, float similarity)
+{
+    qDebug() << QString("Recognized face: %1 (similarity: %.2f)").arg(name).arg(similarity);
+}
+
+void AIDetectionThread::onUnknownFaceDetected(const QRect& faceRect)
+{
+    qDebug() << "Unknown face detected at:" << faceRect;
+}
+
+// 🆕 人脸管理API
+bool AIDetectionThread::registerFace(const QString& name, const QImage& faceImage)
+{
+    if (!m_faceManager) {
+        return false;
     }
 
-    return result;
+    return m_faceManager->registerFace(name, faceImage);
+}
+
+QStringList AIDetectionThread::getRegisteredFaces()
+{
+    if (!m_faceManager) {
+        return QStringList();
+    }
+
+    return m_faceManager->getAllRegisteredNames();
 }
 
 bool AIDetectionThread::shouldRecord(const DetectionResult& result)

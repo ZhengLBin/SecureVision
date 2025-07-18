@@ -205,3 +205,110 @@ void DetectionVisualizer::drawTimestamp(QPainter& painter, const QDateTime& time
     painter.setPen(QPen(m_textColor));
     painter.drawText(textRect, Qt::AlignCenter, timeStr);
 }
+
+void DetectionVisualizer::drawFaceDetections(QPainter& painter, const QVector<FaceInfo>& faces, const QSize& imageSize)
+{
+    if (faces.isEmpty()) {
+        return;
+    }
+
+    painter.save();
+
+    // 设置抗锯齿
+    painter.setRenderHint(QPainter::Antialiasing, true);
+
+    // 为每个人脸绘制检测框和标签
+    for (const auto& face : faces) {
+        drawSingleFace(painter, face);
+    }
+
+    painter.restore();
+}
+
+void DetectionVisualizer::drawSingleFace(QPainter& painter, const FaceInfo& face)
+{
+    // 选择颜色
+    QColor boxColor;
+    QString label;
+
+    if (face.isRecognized) {
+        boxColor = m_recognizedFaceColor;
+        label = QString("%1 (%.1f%%)").arg(face.personName).arg(face.similarity * 100);
+    } else {
+        boxColor = m_unknownFaceColor;
+        label = QString("未知人脸 (%.1f%%)").arg(face.confidence * 100);
+    }
+
+    // 绘制人脸边界框
+    QPen pen(boxColor, 3);
+    painter.setPen(pen);
+    painter.setBrush(Qt::NoBrush);
+    painter.drawRect(face.bbox);
+
+    // 绘制标签
+    drawFaceLabel(painter, face.bbox, label, boxColor);
+
+    // 绘制置信度指示器（可选）
+    if (face.confidence > 0) {
+        drawConfidenceIndicator(painter, face.bbox, face.confidence, boxColor);
+    }
+}
+
+void DetectionVisualizer::drawFaceLabel(QPainter& painter, const QRect& faceRect, const QString& label, const QColor& color)
+{
+    QFont font = painter.font();
+    font.setPixelSize(16);
+    font.setBold(true);
+    painter.setFont(font);
+
+    // 计算标签位置
+    QRect labelRect = calculateLabelRect(faceRect, label, font);
+
+    // 绘制背景
+    painter.fillRect(labelRect, QColor(color.red(), color.green(), color.blue(), 180));
+
+    // 绘制文字
+    painter.setPen(Qt::white);
+    painter.drawText(labelRect, Qt::AlignCenter, label);
+}
+
+QRect DetectionVisualizer::calculateLabelRect(const QRect& faceRect, const QString& label, const QFont& font)
+{
+    QFontMetrics fm(font);
+    QSize textSize = fm.size(Qt::TextSingleLine, label);
+
+    int padding = 8;
+    int labelWidth = textSize.width() + padding * 2;
+    int labelHeight = textSize.height() + padding;
+
+    // 标签位置：人脸框上方，如果空间不够则放在下方
+    int labelX = faceRect.left();
+    int labelY = faceRect.top() - labelHeight - 5;
+
+    if (labelY < 0) {
+        labelY = faceRect.bottom() + 5;
+    }
+
+    return QRect(labelX, labelY, labelWidth, labelHeight);
+}
+
+void DetectionVisualizer::drawConfidenceIndicator(QPainter& painter, const QRect& faceRect, float confidence, const QColor& color)
+{
+    // 在人脸框右上角绘制置信度指示器
+    int indicatorSize = 20;
+    QRect indicatorRect(faceRect.right() - indicatorSize, faceRect.top(), indicatorSize, indicatorSize);
+
+    // 绘制圆形背景
+    painter.setBrush(QColor(color.red(), color.green(), color.blue(), 150));
+    painter.setPen(Qt::NoPen);
+    painter.drawEllipse(indicatorRect);
+
+    // 绘制置信度数值
+    painter.setPen(Qt::white);
+    QFont smallFont = painter.font();
+    smallFont.setPixelSize(10);
+    painter.setFont(smallFont);
+
+    QString confidenceText = QString::number(int(confidence * 100));
+    painter.drawText(indicatorRect, Qt::AlignCenter, confidenceText);
+}

@@ -38,6 +38,8 @@ private slots:
 
     // 新增AI相关槽函数
     void onDetectionResult(const DetectionResult& result);
+    void openFaceRegistration();
+    void updateFaceDetectionStatus(const DetectionResult& result);
     void onRecordTrigger(RecordTrigger trigger, const QImage& frame);
 
 private:
