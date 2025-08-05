@@ -1,0 +1,66 @@
+#ifndef AIDETECTIONTHREAD_H
+#define AIDETECTIONTHREAD_H
+
+#include <QThread>
+#include <QMutex>
+#include <QQueue>
+#include <QImage>
+#include "facedatabase.h"
+#include "aitypes.h"
+#include "motiondetector.h"
+#include "facerecognitionmanager.h"
+
+class AIDetectionThread : public QThread
+{
+    Q_OBJECT
+
+public:
+    explicit AIDetectionThread(QObject *parent = nullptr);
+    ~AIDetectionThread() override;
+
+    // 控制接口
+    void startDetection();
+    void stopDetection();
+    AIConfig getConfig();
+    void setConfig(const AIConfig& config);
+
+    // 输入接口
+    void addFrame(const QImage& frame);
+
+    void testFaceDatabase();
+
+signals:
+    void detectionResult(const DetectionResult& result);
+    void recordTrigger(RecordTrigger trigger, const QImage& frame);
+
+protected:
+    void run() override;
+
+private:
+    // 线程控制
+    bool m_running = false;
+    QMutex m_mutex;
+
+    // 配置和状态
+    AIConfig m_config;
+    int m_frameCounter = 0;
+
+    // 输入队列
+    QQueue<QImage> m_frameQueue;
+    static const int MAX_QUEUE_SIZE = 3;
+
+    // 检测器
+    MotionDetector* m_motionDetector;
+    // RKNNFaceDetector* m_faceDetector;  // 下个阶段添加
+
+    FaceDatabase* m_faceDatabase = nullptr;
+
+    // 处理函数
+    DetectionResult processFrame(const QImage& frame);
+    bool shouldRecord(const DetectionResult& result);
+    void clearQueue();
+
+    FaceRecognitionManager* m_faceManager;
+};
+
+#endif // AIDETECTIONTHREAD_H

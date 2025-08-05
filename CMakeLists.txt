@@ -56,9 +56,56 @@ set(OpenCV_LIBS
     opencv_highgui
 )
 
+# 7. RockX 和 RKNN 库配置（新增）
+set(ROCKX_INCLUDE_DIR ${SYSROOT_PATH}/usr/include)
+set(ROCKX_LIB_DIR ${SYSROOT_PATH}/usr/lib)
+
+# 查找 RockX 相关库
+find_library(ROCKX_LIB
+    NAMES rockx librockx
+    PATHS ${ROCKX_LIB_DIR}
+    PATH_SUFFIXES arm-linux-gnueabihf
+    NO_DEFAULT_PATH
+)
+
+find_library(RKNN_API_LIB
+    NAMES rknn_api librknn_api rknnrt librknnrt
+    PATHS ${ROCKX_LIB_DIR}
+    PATH_SUFFIXES arm-linux-gnueabihf
+    NO_DEFAULT_PATH
+)
+
+# 查找 SQLite3 库
+find_library(SQLITE3_LIB
+    NAMES sqlite3 libsqlite3
+    PATHS ${ROCKX_LIB_DIR}
+    PATH_SUFFIXES arm-linux-gnueabihf
+    NO_DEFAULT_PATH
+)
+
+# 验证库文件
+if(NOT ROCKX_LIB)
+    message(WARNING "RockX library not found in ${ROCKX_LIB_DIR}")
+    # 列出可用的库文件进行调试
+    file(GLOB AVAILABLE_LIBS "${ROCKX_LIB_DIR}/*rockx*" "${ROCKX_LIB_DIR}/*/*rockx*")
+    message(STATUS "Available RockX related files: ${AVAILABLE_LIBS}")
+endif()
+
+if(NOT RKNN_API_LIB)
+    message(WARNING "RKNN API library not found in ${ROCKX_LIB_DIR}")
+    file(GLOB AVAILABLE_RKNN_LIBS "${ROCKX_LIB_DIR}/*rknn*" "${ROCKX_LIB_DIR}/*/*rknn*")
+    message(STATUS "Available RKNN related files: ${AVAILABLE_RKNN_LIBS}")
+endif()
+
+if(NOT SQLITE3_LIB)
+    message(WARNING "SQLite3 library not found in ${ROCKX_LIB_DIR}")
+    file(GLOB AVAILABLE_SQLITE_LIBS "${ROCKX_LIB_DIR}/*sqlite*" "${ROCKX_LIB_DIR}/*/*sqlite*")
+    message(STATUS "Available SQLite related files: ${AVAILABLE_SQLITE_LIBS}")
+endif()
+
 # 7. 查找 Qt5 库（必须在设置 SYSROOT 后）
 set(Qt5_DIR ${SYSROOT_PATH}/usr/lib/cmake/Qt5)  # 根据实际路径调整
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Multimedia Network MultimediaWidgets PrintSupport)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Multimedia Network MultimediaWidgets PrintSupport Sql)
 
 # 8. 包含目录设置
 include_directories(
@@ -70,6 +117,11 @@ include_directories(
     /home/zhenglongbin/code/rv1126/external/rkmedia/include
     /home/zhenglongbin/code/rv1126/app/alientek/atk_rkmedia/library/include
     ${Qt5Multimedia_INCLUDE_DIRS}
+
+    #新增 RockX 相关路径
+    ${ROCKX_INCLUDE_DIR}
+    ${ROCKX_INCLUDE_DIR}/rockx
+    ${ROCKX_INCLUDE_DIR}/rknn
 )
 
 if(Qt5_FOUND)
@@ -124,6 +176,7 @@ target_link_libraries(SecureVision PRIVATE
     Qt5::Multimedia
     Qt5::MultimediaWidgets
     Qt5::PrintSupport
+    Qt5::Sql
 
     avformat
     avcodec
@@ -138,6 +191,9 @@ target_link_libraries(SecureVision PRIVATE
     pthread
 
     ${OpenCV_LIBS}  # 链接 OpenCV 库
+    ${ROCKX_LIB}
+    ${RKNN_API_LIB}
+    ${SQLITE3_LIB}
 )
 
 # 13. 安装设置
@@ -151,11 +207,94 @@ install(TARGETS SecureVision
     RUNTIME DESTINATION bin
 )
 
-# 15. 打印配置信息用于调试
-message(STATUS "==============================================")
-message(STATUS "OpenCV Configuration:")
-message(STATUS "  OpenCV_ROOT: ${OpenCV_ROOT}")
-message(STATUS "  Include dirs: ${OpenCV_INCLUDE_DIRS}")
-message(STATUS "  Library dir: ${OpenCV_LIB_DIR}")
-message(STATUS "  Libraries: ${OpenCV_LIBS}")
-message(STATUS "==============================================")
+# 在你的 CMakeLists.txt 末尾添加以下内容（在现有install规则之后）
+
+# 14. 添加安装规则
+install(TARGETS SecureVision
+    RUNTIME DESTINATION bin
+)
+
+# 🆕 15. 添加RockX模型文件安装规则
+# 定义模型文件源路径（开发机上的路径）
+set(ROCKX_MODEL_SOURCE_DIR "${CMAKE_SOURCE_DIR}/data/models/rockx_data")
+
+# 检查模型文件目录是否存在
+if(EXISTS ${ROCKX_MODEL_SOURCE_DIR})
+    message(STATUS "Found RockX models directory: ${ROCKX_MODEL_SOURCE_DIR}")
+
+    # 列出模型文件用于调试
+    file(GLOB MODEL_FILES "${ROCKX_MODEL_SOURCE_DIR}/*.data")
+    message(STATUS "Model files to install: ${MODEL_FILES}")
+
+    # 安装模型文件到目标设备的标准位置
+    install(DIRECTORY ${ROCKX_MODEL_SOURCE_DIR}/
+        DESTINATION share/rockx_data
+        FILES_MATCHING
+        PATTERN "*.data"
+        PATTERN "*.param"
+        PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
+    )
+
+    # 🔧 也可以安装到多个位置以确保兼容性
+    install(DIRECTORY ${ROCKX_MODEL_SOURCE_DIR}/
+        DESTINATION usr/local/share/rockx_data
+        FILES_MATCHING
+        PATTERN "*.data"
+        PATTERN "*.param"
+        PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
+    )
+
+    message(STATUS "RockX model files will be installed to:")
+    message(STATUS "  - /share/rockx_data")
+    message(STATUS "  - /usr/local/share/rockx_data")
+
+else()
+    message(WARNING "RockX models directory not found: ${ROCKX_MODEL_SOURCE_DIR}")
+    message(STATUS "Please ensure model files are available at build time")
+endif()
+
+
+# 🆕 17. 创建启动脚本（修复路径）
+set(LAUNCH_SCRIPT_CONTENT "#!/bin/bash
+# SecureVision Launch Script
+export ROCKX_MODEL_PATH=\${CMAKE_INSTALL_PREFIX}/share/rockx_data
+export QT_QPA_PLATFORM=linuxfb
+export QT_QPA_FONTDIR=/usr/share/fonts
+
+# 检查模型文件
+if [ ! -d \"\${CMAKE_INSTALL_PREFIX}/share/rockx_data\" ]; then
+    echo \"Warning: RockX model files not found at \${CMAKE_INSTALL_PREFIX}/share/rockx_data\"
+    echo \"Looking for alternative locations...\"
+
+    # 尝试其他可能的位置
+    if [ -d \"/usr/local/share/rockx_data\" ]; then
+        export ROCKX_MODEL_PATH=/usr/local/share/rockx_data
+        echo \"Using models from /usr/local/share/rockx_data\"
+    elif [ -d \"/share/rockx_data\" ]; then
+        export ROCKX_MODEL_PATH=/share/rockx_data
+        echo \"Using models from /share/rockx_data\"
+    else
+        echo \"Error: No RockX model files found!\"
+        exit 1
+    fi
+fi
+
+# 创建运行时数据目录（如果不存在）
+mkdir -p \${HOME}/.local/share/SecureVision/database
+mkdir -p \${HOME}/.local/share/SecureVision/faces
+
+echo \"Starting SecureVision with model path: \$ROCKX_MODEL_PATH\"
+exec \${CMAKE_INSTALL_PREFIX}/bin/SecureVision \"\$@\"
+")
+
+# 创建启动脚本文件
+file(WRITE "${CMAKE_BINARY_DIR}/securevision.sh" "${LAUNCH_SCRIPT_CONTENT}")
+
+# 安装启动脚本
+install(FILES "${CMAKE_BINARY_DIR}/securevision.sh"
+    DESTINATION bin
+    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+    RENAME securevision
+)
+
+

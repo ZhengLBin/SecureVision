@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.5)
 
 project(ai LANGUAGES CXX)
 
-# 添加源文件（注意不要把 .h 当源文件）
 set(AI_SOURCES
     aidetectionthread.cpp
     motiondetector.cpp
     detectionvisualizer.cpp
+    facerecognitionmanager.cpp
+    facedatabase.cpp
+
 )
 
 set(AI_HEADERS
@@ -14,6 +16,8 @@ set(AI_HEADERS
     motiondetector.h
     aitypes.h
     detectionvisualizer.h
+    facerecognitionmanager.h
+    facedatabase.h
 )
 
 # 定义 ai 库
@@ -36,4 +40,5 @@ target_include_directories(ai PUBLIC
 target_link_libraries(ai
     Qt5::Core
     ${OpenCV_LIBS}
+    Qt5::Sql
 )
