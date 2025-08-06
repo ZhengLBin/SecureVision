@@ -159,54 +159,68 @@ bool FaceDatabase::addFaceRecord(const QString& name,
         return false;
     }
 
-    qDebug() << "addFaceRecord: Checking if face exists";
-    // if (faceExists(name)) {
-    //     qDebug() << "addFaceRecord: Face with name already exists:" << name;
-    //     return false;
-    // }
-
-    // 先尝试不包含BLOB的简单插入
-    qDebug() << "addFaceRecord: Attempting simple INSERT without BLOB";
-    QSqlQuery simpleQuery(m_database);
-
-    QString simpleSQL = QString(
-                            "INSERT INTO face_records (name, image_path, description, create_time, last_seen) "
-                            "VALUES ('%1', '%2', '%3', '%4', '%5')")
-                            .arg(name.trimmed())
-                            .arg(imagePath)
-                            .arg(description)
-                            .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"))
-                            .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
-
-    qDebug() << "addFaceRecord: Executing simple SQL:" << simpleSQL;
-
-    if (!simpleQuery.exec(simpleSQL)) {
-        qDebug() << "addFaceRecord: Simple INSERT failed";
-        qDebug() << "SQL Error:" << simpleQuery.lastError().text();
-        qDebug() << "SQL Error Type:" << simpleQuery.lastError().type();
+    if (feature.isEmpty()) {
+        qDebug() << "addFaceRecord: Feature data cannot be empty";
         return false;
     }
 
-    qDebug() << "addFaceRecord: Simple INSERT succeeded";
-    int newId = simpleQuery.lastInsertId().toInt();
-    qDebug() << "addFaceRecord: New record ID:" << newId;
+    qDebug() << "addFaceRecord: Starting transaction for complete record insertion";
 
-    // 现在尝试更新BLOB数据
-    qDebug() << "addFaceRecord: Attempting to update BLOB data";
-    QSqlQuery blobQuery(m_database);
-    blobQuery.prepare("UPDATE face_records SET feature = ? WHERE id = ?");
-    blobQuery.addBindValue(feature);
-    blobQuery.addBindValue(newId);
-
-    if (!blobQuery.exec()) {
-        qDebug() << "addFaceRecord: BLOB update failed";
-        qDebug() << "SQL Error:" << blobQuery.lastError().text();
-        // 不返回false，因为基本记录已经插入成功
-    } else {
-        qDebug() << "addFaceRecord: BLOB update succeeded";
+    // 🔧 使用事务确保数据一致性
+    if (!m_database.transaction()) {
+        qDebug() << "addFaceRecord: Failed to start transaction";
+        return false;
     }
 
-    emit faceAdded(name, newId);
+    // 🔧 一次性插入完整记录，包括BLOB数据
+    QSqlQuery query(m_database);
+
+    // 准备完整的INSERT语句
+    QString insertSQL = "INSERT INTO face_records (name, image_path, feature, description, create_time, last_seen, recognition_count, is_active) "
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+    if (!query.prepare(insertSQL)) {
+        qDebug() << "addFaceRecord: Failed to prepare INSERT statement";
+        qDebug() << "SQL Error:" << query.lastError().text();
+        m_database.rollback();
+        return false;
+    }
+
+    // 绑定所有参数
+    query.addBindValue(name.trimmed());                                     // name
+    query.addBindValue(imagePath);                                          // image_path
+    query.addBindValue(feature);                                            // feature (BLOB)
+    query.addBindValue(description);                                        // description
+    query.addBindValue(QDateTime::currentDateTime());                       // create_time
+    query.addBindValue(QDateTime::currentDateTime());                       // last_seen
+    query.addBindValue(0);                                                  // recognition_count
+    query.addBindValue(true);                                               // is_active
+
+    qDebug() << "addFaceRecord: Executing complete INSERT with all data";
+    qDebug() << "  - Name:" << name.trimmed();
+    qDebug() << "  - Image path:" << imagePath;
+    qDebug() << "  - Feature size:" << feature.size() << "bytes";
+    qDebug() << "  - Description:" << description;
+
+    if (!query.exec()) {
+        qDebug() << "addFaceRecord: Complete INSERT failed";
+        qDebug() << "SQL Error:" << query.lastError().text();
+        qDebug() << "SQL Error Type:" << query.lastError().type();
+        m_database.rollback();
+        return false;
+    }
+
+    // 提交事务
+    if (!m_database.commit()) {
+        qDebug() << "addFaceRecord: Failed to commit transaction";
+        qDebug() << "SQL Error:" << m_database.lastError().text();
+        return false;
+    }
+
+    int newId = query.lastInsertId().toInt();
+    qDebug() << "addFaceRecord: Complete record inserted successfully with ID:" << newId;
+
+    emit faceAdded(name.trimmed(), newId);
     return true;
 }
 
@@ -427,11 +441,12 @@ int FaceDatabase::findBestMatch(const QByteArray& queryFeature,
             bestMatchId = recordId;
         }
 
-        logDebug(QString("Compared with %1 (ID:%2): similarity=%.3f").arg(recordName).arg(recordId).arg(similarity));
+        logDebug(QString("Compared with %1 (ID:%2): similarity=%3")
+                     .arg(recordName).arg(recordId).arg(similarity, 0, 'f', 3));
     }
 
-    logDebug(QString("Feature matching completed: compared %1 faces, best similarity=%.3f, threshold=%.3f")
-                 .arg(comparedCount).arg(bestSimilarity).arg(minSimilarity));
+    logDebug(QString("Feature matching completed: compared %1 faces, best similarity=%2, threshold=%3")
+                 .arg(comparedCount).arg(bestSimilarity, 0, 'f', 3).arg(minSimilarity, 0, 'f', 3));
 
     // 6. 检查是否达到最小相似度阈值
     if (bestSimilarity < minSimilarity) {

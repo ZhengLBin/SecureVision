@@ -37,6 +37,8 @@ public:
     void setFaceRecognitionEnabled(bool enabled);
     bool isFaceRecognitionEnabled() const { return m_faceRecognitionEnabled; }
 
+    void runSimpleFaceTest();
+
     // 🆕 人脸管理方法
     bool registerFace(const QString& name, const QImage& faceImage);
     QStringList getRegisteredFaces();
@@ -93,6 +95,9 @@ private:
     FaceRecognitionManager* m_faceManager;
     bool m_faceRecognitionEnabled;
     int m_faceDetectionFrameCounter;
+
+
+    void testFeatureConsistency(const QImage& testImage, const QString& userName);
 
     // 🆕 性能统计
     QDateTime m_lastFaceDetectionTime;

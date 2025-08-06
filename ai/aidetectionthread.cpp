@@ -18,7 +18,7 @@ AIDetectionThread::AIDetectionThread(QObject *parent)
     qDebug() << "--------AIDetectionThread constructor started------------";
     qDebug() << "m_faceDatabase created at address:" << (void*)m_faceDatabase;
 
-    // 🆕 初始化人脸识别管理器
+    // 初始化人脸识别管理器
     if (!initializeFaceRecognition()) {
         qDebug() << "AIDetectionThread: Face recognition initialization failed";
         m_faceRecognitionEnabled = false;
@@ -35,6 +35,8 @@ AIDetectionThread::AIDetectionThread(QObject *parent)
 
     //     testFaceDatabase();
     // });
+
+
 
     qDebug() << "AIDetectionThread constructor completed";
 }
@@ -54,7 +56,14 @@ void AIDetectionThread::startDetection()
     m_running = true;
     if (!isRunning()) {
         start();
+        QTimer::singleShot(5000, this, [this]() {
+            if (m_faceRecognitionEnabled && m_faceManager) {
+                qDebug() << "start auto face detection---------------------------..";
+                runSimpleFaceTest();
+            }
+        });
     }
+
     qDebug() << "AI Detection started";
 }
 
@@ -555,3 +564,217 @@ void AIDetectionThread::testFaceDatabase()
     qDebug() << "All database operations tested and working correctly!";
 }
 
+void AIDetectionThread::runSimpleFaceTest()
+{
+    qDebug() << "========== Starting Simple Face Recognition Test ==========";
+
+    if (!m_faceManager || !m_faceRecognitionEnabled) {
+        qDebug() << "Error: Face recognition manager not initialized";
+        return;
+    }
+
+    // 1. 创建测试图像
+    QString testImagePath = "/demo/test_face.jpg";
+    QImage testImage(testImagePath);
+
+    if (testImage.isNull()) {
+        qDebug() << "Warning: Test image not found, using default test image";
+        // 创建一个简单的测试图像
+        testImage = QImage(400, 400, QImage::Format_RGB888);
+        testImage.fill(QColor(128, 128, 128));
+    }
+
+    qDebug() << "Test image size:" << testImage.size();
+
+    // 2. 生成唯一的测试用户名（避免重复）
+    QString testUserName = QString("TestUser_%1").arg(QDateTime::currentMSecsSinceEpoch() % 10000);
+    qDebug() << "Using test user name:" << testUserName;
+
+    // 🆕 检查现有用户，如果 TestUser 已存在，直接使用它进行测试
+    QStringList existingUsers = getRegisteredFaces();
+    QString targetUser = "TestUser";
+
+    bool needsRegistration = true;
+    if (existingUsers.contains("TestUser")) {
+        qDebug() << "Found existing TestUser, using it for recognition test";
+        needsRegistration = false;
+        targetUser = "TestUser";
+    } else {
+        qDebug() << "No existing TestUser found, will register new one";
+        targetUser = testUserName;
+    }
+
+    // 3. 注册人脸（如果需要）
+    if (needsRegistration) {
+        qDebug() << "Step 1: Registering new test face:" << targetUser;
+        bool registerResult = registerFace(targetUser, testImage);
+
+        if (registerResult) {
+            qDebug() << "✓ Face registration successful";
+        } else {
+            qDebug() << "✗ Face registration failed";
+            return;
+        }
+
+        // 等待数据库操作完成
+        QThread::msleep(1000);
+    } else {
+        qDebug() << "Step 1: Skipping registration, using existing user:" << targetUser;
+    }
+
+    // 4. 测试人脸识别
+    qDebug() << "Step 2: Testing face recognition...";
+    QVector<FaceInfo> recognitionResults = m_faceManager->detectAndRecognizeFaces(testImage);
+
+    if (recognitionResults.isEmpty()) {
+        qDebug() << "✗ No faces detected";
+
+        // 🆕 如果没有检测到人脸，尝试仅进行检测测试
+        qDebug() << "Step 2.1: Trying face detection only...";
+        QVector<FaceInfo> detectionResults = m_faceManager->detectFaces(testImage);
+
+        if (detectionResults.isEmpty()) {
+            qDebug() << "✗ Face detection also failed - check image quality or RockX models";
+        } else {
+            qDebug() << "✓ Face detection successful but recognition failed";
+            for (int i = 0; i < detectionResults.size(); ++i) {
+                const FaceInfo& face = detectionResults[i];
+                qDebug() << QString("  Detected Face%1: Position=(%2,%3,%4,%5) Confidence=%6")
+                                .arg(i+1)
+                                .arg(face.bbox.x()).arg(face.bbox.y())
+                                .arg(face.bbox.width()).arg(face.bbox.height())
+                                .arg(face.confidence, 0, 'f', 2);
+            }
+        }
+    } else {
+        qDebug() << "✓ Detected" << recognitionResults.size() << "face(s)";
+
+        for (int i = 0; i < recognitionResults.size(); ++i) {
+            const FaceInfo& face = recognitionResults[i];
+            qDebug() << QString("  Face%1: Position=(%2,%3,%4,%5) Confidence=%6")
+                            .arg(i+1)
+                            .arg(face.bbox.x()).arg(face.bbox.y())
+                            .arg(face.bbox.width()).arg(face.bbox.height())
+                            .arg(face.confidence, 0, 'f', 2);
+
+            if (face.isRecognized) {
+                qDebug() << QString("  ✓ Recognition successful: %1 (Similarity: %2)")
+                                .arg(face.personName)
+                                .arg(face.similarity, 0, 'f', 3);
+
+                // 🆕 验证识别结果是否正确
+                if (face.personName == targetUser || face.personName == "TestUser") {
+                    qDebug() << "  ✓ Correct user recognized!";
+                } else {
+                    qDebug() << "  ⚠ Recognized as different user:" << face.personName;
+                }
+            } else {
+                qDebug() << "  ✗ Failed to recognize as registered user";
+                qDebug() << "    Best similarity:" << face.similarity;
+                qDebug() << "    Recognition threshold:" << m_config.faceRecognitionThreshold;
+
+                // 🆕 提供调试建议
+                if (face.similarity > 0.0f && face.similarity < m_config.faceRecognitionThreshold) {
+                    qDebug() << "  💡 Suggestion: Try lowering the recognition threshold";
+                    qDebug() << "     Current threshold:" << m_config.faceRecognitionThreshold;
+                    qDebug() << "     Detected similarity:" << face.similarity;
+                }
+            }
+        }
+    }
+
+    // 5. 数据库统计信息
+    qDebug() << "Database statistics:";
+    qDebug() << "  - Total registered faces:" << getTotalRegisteredFaces();
+    qDebug() << "  - Registered users list:" << getRegisteredFaces();
+
+    // 🆕 6. 测试特征提取和相似度计算
+    qDebug() << "Step 3: Testing feature extraction and similarity calculation...";
+    testFeatureConsistency(testImage, targetUser);
+
+    qDebug() << "========== Face recognition test completed ==========";
+}
+
+void AIDetectionThread::testFeatureConsistency(const QImage& testImage, const QString& userName)
+{
+    if (!m_faceManager) {
+        return;
+    }
+
+    qDebug() << "Testing feature consistency for user:" << userName;
+
+    // 1. 从数据库获取已注册的特征
+    QVector<FaceRecord> records = m_faceDatabase->getAllFaceRecords();
+    FaceRecord targetRecord;
+
+    for (const auto& record : records) {
+        if (record.name == userName || record.name == "TestUser") {
+            targetRecord = record;
+            break;
+        }
+    }
+
+    if (targetRecord.id <= 0) {
+        qDebug() << "  ✗ Target user not found in database";
+        return;
+    }
+
+    // 2. 获取存储的特征
+    QByteArray storedFeature = m_faceDatabase->getFaceFeature(targetRecord.id);
+    if (storedFeature.isEmpty()) {
+        qDebug() << "  ✗ Failed to retrieve stored feature";
+        return;
+    }
+
+    qDebug() << "  ✓ Retrieved stored feature, size:" << storedFeature.size();
+
+    // 3. 从当前图像重新提取特征
+    // 注意：这里需要先检测人脸，然后提取特征
+    QVector<FaceInfo> detectedFaces = m_faceManager->detectFaces(testImage);
+
+    if (detectedFaces.isEmpty()) {
+        qDebug() << "  ✗ No faces detected for feature extraction";
+        return;
+    }
+
+    // 选择最大的人脸
+    FaceInfo largestFace = *std::max_element(detectedFaces.begin(), detectedFaces.end(),
+                                             [](const FaceInfo& a, const FaceInfo& b) {
+                                                 return a.bbox.width() * a.bbox.height() < b.bbox.width() * b.bbox.height();
+                                             });
+
+    qDebug() << "  ✓ Selected face for feature extraction:" << largestFace.bbox;
+
+    // 4. 使用新的特征提取方法
+    QByteArray currentFeature;
+
+    // 这里我们需要直接调用特征提取，但由于方法是私有的，
+    // 我们可以通过识别流程来获取特征并比较相似度
+
+    // 临时解决方案：通过数据库的findBestMatch来测试相似度
+    float similarity = 0.0f;
+    int matchId = m_faceDatabase->findBestMatch(storedFeature, similarity, 0.0f); // 使用0.0阈值获取真实相似度
+
+    qDebug() << "  Self-similarity test (stored feature vs stored feature):";
+    qDebug() << "    Match ID:" << matchId;
+    qDebug() << "    Similarity:" << similarity;
+
+    if (similarity > 0.95f) {
+        qDebug() << "  ✓ Self-similarity test passed (>0.95)";
+    } else {
+        qDebug() << "  ⚠ Self-similarity test concern - similarity:" << similarity;
+    }
+
+    // 5. 提供调试建议
+    qDebug() << "  Debug suggestions:";
+    qDebug() << "    - Current recognition threshold:" << m_config.faceRecognitionThreshold;
+
+    if (similarity < 0.5f) {
+        qDebug() << "    - ⚠ Very low similarity suggests feature extraction issues";
+        qDebug() << "    - Check RockX model files and RGA hardware acceleration";
+    } else if (similarity < m_config.faceRecognitionThreshold) {
+        qDebug() << "    - 💡 Consider lowering recognition threshold to:" << (similarity * 0.9f);
+    } else {
+        qDebug() << "    - ✓ Recognition should work with current settings";
+    }
+}

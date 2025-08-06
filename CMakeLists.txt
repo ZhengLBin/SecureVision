@@ -202,75 +202,74 @@ set_target_properties(SecureVision PROPERTIES
     BUILD_WITH_INSTALL_RPATH TRUE
 )
 
-# 14. 添加安装规则
+# 14. 添加安装规则（移除重复）
 install(TARGETS SecureVision
     RUNTIME DESTINATION bin
 )
 
-# 在你的 CMakeLists.txt 末尾添加以下内容（在现有install规则之后）
-
-# 14. 添加安装规则
-install(TARGETS SecureVision
-    RUNTIME DESTINATION bin
-)
-
-# 🆕 15. 添加RockX模型文件安装规则
-# 定义模型文件源路径（开发机上的路径）
+# 🆕 15. 添加RockX模型文件安装规则（仅安装必需的3个模型）
 set(ROCKX_MODEL_SOURCE_DIR "${CMAKE_SOURCE_DIR}/data/models/rockx_data")
+
+# 定义人脸识别必需的模型文件
+set(REQUIRED_FACE_MODELS
+    "face_detection_v3_fast.data"    # 人脸检测
+    "face_landmark5.data"            # 5点关键点检测
+    "face_recognition.data"          # 人脸识别特征提取
+)
 
 # 检查模型文件目录是否存在
 if(EXISTS ${ROCKX_MODEL_SOURCE_DIR})
     message(STATUS "Found RockX models directory: ${ROCKX_MODEL_SOURCE_DIR}")
 
-    # 列出模型文件用于调试
-    file(GLOB MODEL_FILES "${ROCKX_MODEL_SOURCE_DIR}/*.data")
-    message(STATUS "Model files to install: ${MODEL_FILES}")
+    # 列出源目录中的所有文件（调试用）
+    file(GLOB ALL_MODEL_FILES "${ROCKX_MODEL_SOURCE_DIR}/*.data")
+    message(STATUS "All available model files: ${ALL_MODEL_FILES}")
 
-    # 安装模型文件到目标设备的标准位置
-    install(DIRECTORY ${ROCKX_MODEL_SOURCE_DIR}/
-        DESTINATION share/rockx_data
-        FILES_MATCHING
-        PATTERN "*.data"
-        PATTERN "*.param"
-        PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
-    )
+    # 检查并安装每个必需的模型文件
+    set(MODELS_TO_INSTALL "")
+    foreach(MODEL_FILE ${REQUIRED_FACE_MODELS})
+        set(FULL_MODEL_PATH "${ROCKX_MODEL_SOURCE_DIR}/${MODEL_FILE}")
+        if(EXISTS ${FULL_MODEL_PATH})
+            message(STATUS "✓ Will install required model: ${MODEL_FILE}")
+            list(APPEND MODELS_TO_INSTALL ${FULL_MODEL_PATH})
+        else()
+            message(WARNING "✗ Missing required model: ${MODEL_FILE}")
+            message(WARNING "  Expected at: ${FULL_MODEL_PATH}")
+        endif()
+    endforeach()
 
-    # 🔧 也可以安装到多个位置以确保兼容性
-    install(DIRECTORY ${ROCKX_MODEL_SOURCE_DIR}/
-        DESTINATION usr/local/share/rockx_data
-        FILES_MATCHING
-        PATTERN "*.data"
-        PATTERN "*.param"
-        PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
-    )
+    # 仅安装找到的必需模型文件
+    if(MODELS_TO_INSTALL)
+        # 只安装到一个位置，避免路径重复
+        install(FILES ${MODELS_TO_INSTALL}
+            DESTINATION share/rockx_data
+            PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
+        )
 
-    message(STATUS "RockX model files will be installed to:")
-    message(STATUS "  - /share/rockx_data")
-    message(STATUS "  - /usr/local/share/rockx_data")
+        list(LENGTH MODELS_TO_INSTALL MODELS_COUNT)
+        message(STATUS "Will install ${MODELS_COUNT} model files to: /share/rockx_data")
+    else()
+        message(FATAL_ERROR "No required model files found!")
+    endif()
 
 else()
-    message(WARNING "RockX models directory not found: ${ROCKX_MODEL_SOURCE_DIR}")
-    message(STATUS "Please ensure model files are available at build time")
+    message(FATAL_ERROR "RockX models directory not found: ${ROCKX_MODEL_SOURCE_DIR}")
 endif()
 
-
-# 🆕 17. 创建启动脚本（修复路径）
+# # 🆕 16. 创建启动脚本
 set(LAUNCH_SCRIPT_CONTENT "#!/bin/bash
 # SecureVision Launch Script
-export ROCKX_MODEL_PATH=\${CMAKE_INSTALL_PREFIX}/share/rockx_data
+export ROCKX_MODEL_PATH=/usr/local/share/rockx_data
 export QT_QPA_PLATFORM=linuxfb
 export QT_QPA_FONTDIR=/usr/share/fonts
 
 # 检查模型文件
-if [ ! -d \"\${CMAKE_INSTALL_PREFIX}/share/rockx_data\" ]; then
-    echo \"Warning: RockX model files not found at \${CMAKE_INSTALL_PREFIX}/share/rockx_data\"
+if [ ! -d \"/usr/local/share/rockx_data\" ]; then
+    echo \"Warning: RockX model files not found at /usr/local/share/rockx_data\"
     echo \"Looking for alternative locations...\"
 
     # 尝试其他可能的位置
-    if [ -d \"/usr/local/share/rockx_data\" ]; then
-        export ROCKX_MODEL_PATH=/usr/local/share/rockx_data
-        echo \"Using models from /usr/local/share/rockx_data\"
-    elif [ -d \"/share/rockx_data\" ]; then
+    if [ -d \"/share/rockx_data\" ]; then
         export ROCKX_MODEL_PATH=/share/rockx_data
         echo \"Using models from /share/rockx_data\"
     else
@@ -284,7 +283,7 @@ mkdir -p \${HOME}/.local/share/SecureVision/database
 mkdir -p \${HOME}/.local/share/SecureVision/faces
 
 echo \"Starting SecureVision with model path: \$ROCKX_MODEL_PATH\"
-exec \${CMAKE_INSTALL_PREFIX}/bin/SecureVision \"\$@\"
+exec /usr/local/bin/SecureVision \"\$@\"
 ")
 
 # 创建启动脚本文件
@@ -296,5 +295,4 @@ install(FILES "${CMAKE_BINARY_DIR}/securevision.sh"
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
     RENAME securevision
 )
-
 

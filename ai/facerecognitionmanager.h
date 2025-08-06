@@ -70,6 +70,9 @@ private:
     int m_detectionCount;
     int m_recognitionCount;
 
+    mutable QImage m_imageBuffer;  // 图像缓存
+    mutable QByteArray m_dataBuffer; // 数据缓存
+
     // 🔨 私有方法
     bool initializeRockX();
     void cleanup();
@@ -83,6 +86,11 @@ private:
     QVector<FaceInfo> processDetection(const QImage& image);
     FaceInfo processRecognition(const FaceInfo& detectedFace, const QImage& originalImage);
     QByteArray extractFaceFeature(const QImage& faceImage);
+
+    QByteArray extractFaceFeatureFromDetectedFace(const QImage& originalImage, const QRect& faceRect);
+
+    // 新增：特征质量验证
+    bool validateFeatureQuality(const QByteArray& feature);
 
     // 🛠️ 辅助方法
     rockx_object_t* getMaxFace(rockx_object_array_t* faceArray);
